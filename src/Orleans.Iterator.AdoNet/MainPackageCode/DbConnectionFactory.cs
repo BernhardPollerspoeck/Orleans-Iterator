@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿/*
+WARNING: This code is taken from https://github.com/dotnet/orleans/blob/main/src/AdoNet/Shared/Storage/DbConnectionFactory.cs
+and slightly modified to adhere to this projects conventions and respecting null context
+ */
 
-namespace Orleans.Iterator.Dev.COPY;
+using System.Data.Common;
+using System.Reflection;
+
+namespace Orleans.Iterator.AdoNet.MainPackageCode;
 
 internal static class DbConnectionFactory
 {
-    private static readonly ConcurrentDictionary<string, CachedFactory> factoryCache =
-        new ConcurrentDictionary<string, CachedFactory>();
-
-    private static readonly Dictionary<string, List<Tuple<string, string>>> providerFactoryTypeMap =
-        new Dictionary<string, List<Tuple<string, string>>>
+    private static readonly Dictionary<string, List<Tuple<string, string>>> _providerFactoryTypeMap =
+        new()
         {
                 { AdoNetInvariants.InvariantNameSqlServer, new List<Tuple<string, string>>{ new Tuple<string, string>("System.Data.SqlClient", "System.Data.SqlClient.SqlClientFactory") } },
                 { AdoNetInvariants.InvariantNameMySql, new List<Tuple<string, string>>{ new Tuple<string, string>("MySql.Data", "MySql.Data.MySqlClient.MySqlClientFactory") } },
@@ -28,19 +24,18 @@ internal static class DbConnectionFactory
 
     private static CachedFactory GetFactory(string invariantName)
     {
-        if (String.IsNullOrWhiteSpace(invariantName))
+        if (string.IsNullOrWhiteSpace(invariantName))
         {
             throw new ArgumentNullException(nameof(invariantName));
         }
 
-        List<Tuple<string, string>> providerFactoryDefinitions;
-        if (!providerFactoryTypeMap.TryGetValue(invariantName, out providerFactoryDefinitions) || providerFactoryDefinitions.Count == 0)
+        if (!_providerFactoryTypeMap.TryGetValue(invariantName, out var providerFactoryDefinitions) || providerFactoryDefinitions.Count == 0)
             throw new InvalidOperationException($"Database provider factory with '{invariantName}' invariant name not supported.");
 
-        List<Exception> exceptions = null;
+        var exceptions = new List<Exception>();
         foreach (var providerFactoryDefinition in providerFactoryDefinitions)
         {
-            Assembly asm = null;
+            Assembly? asm = null;
             try
             {
                 var asmName = new AssemblyName(providerFactoryDefinition.Item1);
@@ -72,42 +67,41 @@ internal static class DbConnectionFactory
                 continue;
             }
 
-            var factory = (DbProviderFactory)prop.GetValue(null);
+            if (prop.GetValue(null) is not DbProviderFactory factory)
+            {
+                AddException(new Exception(nameof(factory)));
+                continue;
+            }
+            if (providerFactoryType.AssemblyQualifiedName == null)
+            {
+                AddException(new Exception(nameof(providerFactoryType.AssemblyQualifiedName)));
+                continue;
+            }
             return new CachedFactory(factory, providerFactoryType.Name, "", providerFactoryType.AssemblyQualifiedName);
         }
 
         throw new AggregateException(exceptions);
-
         void AddException(Exception ex)
         {
-            if (exceptions == null)
-            {
-                exceptions = new List<Exception>();
-            }
             exceptions.Add(ex);
         }
     }
 
     public static DbConnection CreateConnection(string invariantName, string connectionString)
     {
-        if (String.IsNullOrWhiteSpace(invariantName))
+        if (string.IsNullOrWhiteSpace(invariantName))
         {
             throw new ArgumentNullException(nameof(invariantName));
         }
 
-        if (String.IsNullOrWhiteSpace(connectionString))
+        if (string.IsNullOrWhiteSpace(connectionString))
         {
             throw new ArgumentNullException(nameof(connectionString));
         }
 
-        var factory = factoryCache.GetOrAdd(invariantName, GetFactory).Factory;
-        var connection = factory.CreateConnection();
-
-        if (connection == null)
-        {
-            throw new InvalidOperationException($"Database provider factory: '{invariantName}' did not return a connection object.");
-        }
-
+        var factory = GetFactory(invariantName).Factory;
+        var connection = factory.CreateConnection()
+            ?? throw new InvalidOperationException($"Database provider factory: '{invariantName}' did not return a connection object.");
         connection.ConnectionString = connectionString;
         return connection;
     }

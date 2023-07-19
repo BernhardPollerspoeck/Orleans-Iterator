@@ -1,6 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿/*
+WARNING: This code is taken from https://github.com/dotnet/orleans/blob/main/src/AdoNet/Shared/Storage/AdoNetInvariants.cs 
+and slightly modified to adhere to this projects conventions and respecting null context
+ */
+using System.Collections.ObjectModel;
 
-namespace Orleans.Iterator.Dev.COPY;
+namespace Orleans.Iterator.AdoNet.MainPackageCode;
 
 internal static class AdoNetInvariants
 {
@@ -24,6 +28,7 @@ internal static class AdoNetInvariants
     /// <summary>
     /// Microsoft SQL Server invariant name string.
     /// </summary>
+#pragma warning disable IDE1006 // Naming Styles
     public const string InvariantNameSqlServer = "System.Data.SqlClient";
 
     /// <summary>
@@ -55,4 +60,5 @@ internal static class AdoNetInvariants
     /// An open source implementation of the MySQL connector library.
     /// </summary>
     public const string InvariantNameMySqlConnector = "MySql.Data.MySqlConnector";
+#pragma warning restore IDE1006 // Naming Styles
 }

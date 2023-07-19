@@ -1,4 +1,4 @@
-﻿namespace Orleans.Iterator.Dev;
+﻿namespace Orleans.Iterator.Dev.Grains;
 
 public interface IReverseGrain : IGrainWithStringKey
 {
