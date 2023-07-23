@@ -13,5 +13,5 @@ public interface IGrainIterator
     /// <returns></returns>
     Task<IIterativeGrainReader> GetReader<TGrainInterface>(string grainTypeString)
         where TGrainInterface : IGrain;
-    //TODO: Document
+
 }

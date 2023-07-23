@@ -18,9 +18,16 @@ public interface IIterativeGrainReader
     /// </summary>
     bool ReadAllowed { get; }
     
-    //TODO: document
+    /// <summary>
+    /// Prepares and opens the connection
+    /// </summary>
+    /// <param name="cancellationToken">A Token to stop this action</param>
+    /// <returns>If the reader is ready to iterate</returns>
     Task<bool> StartRead(CancellationToken cancellationToken);
 
-    //TODO: document
+    /// <summary>
+    /// Closes and disposes the underlying connection
+    /// </summary>
+    /// <param name="cancellationToken">A Token to stop this action</param>
     Task StopRead(CancellationToken cancellationToken);
 }

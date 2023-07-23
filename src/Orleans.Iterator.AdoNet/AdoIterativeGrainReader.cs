@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Orleans.Iterator.Abstraction;
 using Orleans.Iterator.AdoNet.MainPackageCode;
 using Orleans.Storage;
+using Orleans.Iterator.AdoNet.QueryProviders;
+using System.Windows.Input;
 
 namespace Orleans.Iterator.AdoNet;
 
@@ -20,8 +22,11 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeGrainReader
     private readonly string _serviceId;
     private readonly IServiceProvider _serviceProvider;
     private readonly string _storageTypeString;
+
     private DbDataReader? _reader;
     private GrainType? _concreteGrainType;
+    private DbConnection? _connection;
+    private DbCommand? _command;
     #endregion
 
     #region ctor
@@ -44,17 +49,28 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeGrainReader
     public async Task<bool> StartRead(CancellationToken cancellationToken)
     {
         ResolveConcreteGrainType();
-        var connection = await CreateOpenedConnection();
-        var command = CreateCommand(connection);
-        SetQuery(command);
-        _reader = command.ExecuteReader();
+        _connection = await CreateOpenedConnection();
+        _command = CreateCommand(_connection);
+        SetQuery(_command);
+        _reader = _command.ExecuteReader();
 
         return ReadAllowed;
     }
-    public Task StopRead(CancellationToken cancellationToken)
+    public async Task StopRead(CancellationToken cancellationToken)
     {
-        //TODO: implement
-        return Task.CompletedTask;
+        if (_connection is not null)
+        {
+            await _connection.CloseAsync();
+            await _connection.DisposeAsync();
+        }
+        if (_reader is not null)
+        {
+            await _reader.DisposeAsync();
+        }
+        if (_command is not null)
+        {
+            await _command.DisposeAsync();
+        }
     }
     #endregion
 
@@ -114,17 +130,8 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeGrainReader
     }
     private void SetQuery(DbCommand command)
     {
-        //TODO: query provider based on invariant
-        var query = @"SELECT
-                GrainIdN0,  
-                GrainIdN1, 
-                GrainIdExtensionString 
-            FROM orleansstorage            
-            WHERE 
-            	ServiceId = @serviceId AND @ServiceId IS NOT NULL
-            	AND GrainTypeString = @grainTypeString AND grainTypeString IS NOT NULL
-                AND GrainTypeHash = @grainTypeHash AND @grainTypeHash IS NOT NULL;";
-        command.CommandText = query;
+        var queryProvider = QueryProviderFactory.CreateProvider(_options.Invariant);
+        command.CommandText = queryProvider.GetSelectGrainIdQuery();
     }
     #endregion
 
