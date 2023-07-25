@@ -1,55 +1,55 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Orleans.Configuration;
-using System.Diagnostics;
 using Orleans.Iterator.Dev.Grains;
-using Orleans.Iterator.AdoNet.Extensions;
+using Orleans.Iterator.Abstraction;
+using Orleans.Iterator.Abstraction.Abstraction;
 
 var builder = Host.CreateDefaultBuilder(args);
 
 const string? CONNECTION = "server=localhost;database=orleansIterator;user=root;password=unsecure1Admin";
 
-builder.UseOrleans((hostContext, siloBuilder) =>
-    siloBuilder
-        .UseAdoNetClustering(o =>
-        {
-            o.Invariant = "MySql.Data.MySqlClient";
-            o.ConnectionString = CONNECTION;
-        })
-        .AddAdoNetGrainStorage("STORE_NAME", options =>
-        {
-            options.Invariant = "MySql.Data.MySqlClient";
-            options.ConnectionString = CONNECTION;
-        })
-        .Configure<ClusterOptions>(o =>
-        {
-            o.ClusterId = "iteartor";
-            o.ServiceId = "tester";
-        })
-        .UseAdoNetGrainIterator(o =>
-        {
-            o.Invariant = "MySql.Data.MySqlClient";
-            o.ConnectionString = CONNECTION;
-        })
-);
+builder.UseOrleansClient(clientBuilder =>
+{
+    var invariant = "MySql.Data.MySqlClient";
+    var connectionString = CONNECTION;
+
+    clientBuilder.UseAdoNetClustering(options =>
+    {
+        options.Invariant = invariant;
+        options.ConnectionString = connectionString;
+    })
+    .Configure<ClusterOptions>(o =>
+    {
+        o.ClusterId = "iteartor";
+        o.ServiceId = "tester";
+    })
+    .UseIterator()
+    ;
+});
+
+
+
 
 var host = builder.Build();
 await host.StartAsync();
 
 var client = host.Services.GetRequiredService<IClusterClient>();
 
-await client.GetGrain<IReverseGrain>("access").Reverse();
-await client.GetGrain<IReverseGrain>("persistence").Reverse();
-await client.GetGrain<IReverseGrain>("propperly").Reverse();
-await client.GetGrain<IReverseGrain>("iterator").Reverse();
-await client.GetGrain<IReverseGrain>("close").Reverse();
-await client.GetGrain<IReverseGrain>("abc").Reverse();
+var grain = client.GetGrain<IReverseGrain>("aaa");
+var rev = await grain.Reverse();
 
 
-var aggregate = await client
-    .GetGrain<IAggregateGrain>("Look in 'DoWork' for iterator useage")
-    .DoWork();
-Debug.WriteLine(aggregate);
+
+//with this iterator factory you can create a iterator on the server to be consumed at the client.
+var iteratorFactory = host.Services.GetRequiredService<IIteratorFactory>();
+var iterator = iteratorFactory.CreateIterator<IReverseGrain>("Reverserino");
+
+await foreach (var entry in iterator)
+{
+    Console.WriteLine($"ID: {entry}");
+}
+
 
 
 Console.ReadLine();

@@ -7,13 +7,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orleans.Iterator.Dev", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orleans.Iterator.Abstraction", "src\Orleans.Iterator.Abstraction\Orleans.Iterator.Abstraction.csproj", "{53334D0B-EA8E-4691-A182-508F8A770C73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orleans.Iterator.AdoNet", "src\Orleans.Iterator.AdoNet\Orleans.Iterator.AdoNet.csproj", "{AF363103-734B-4779-BBA7-3D11ACABF1FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orleans.Iterator.AdoNet", "src\Orleans.Iterator.AdoNet\Orleans.Iterator.AdoNet.csproj", "{AF363103-734B-4779-BBA7-3D11ACABF1FC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "001_Runtimes", "001_Runtimes", "{D400CE32-9A12-47C5-A2FF-11BEDC7E71AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "010_Abstractions", "010_Abstractions", "{29C67B8A-161A-4D42-AA25-50FDE7342DDF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "030_AdoNet", "030_AdoNet", "{F8168FDE-5F2B-4EDA-9F0C-83AD3CACDD15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orleans.Iterator.Dev.Server", "src\Orleans.Iterator.Dev.Server\Orleans.Iterator.Dev.Server.csproj", "{CF951541-202B-4582-A436-402DCED6E7CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "002_Grains", "002_Grains", "{D30A722F-5845-44A4-B2D9-903FC7D38426}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orleans.Iterator.Dev.Grains", "Orleans.Iterator.Dev.Grains\Orleans.Iterator.Dev.Grains.csproj", "{1F89690B-9BFB-427A-91F8-313618B25167}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +39,14 @@ Global
 		{AF363103-734B-4779-BBA7-3D11ACABF1FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF363103-734B-4779-BBA7-3D11ACABF1FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF363103-734B-4779-BBA7-3D11ACABF1FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF951541-202B-4582-A436-402DCED6E7CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF951541-202B-4582-A436-402DCED6E7CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF951541-202B-4582-A436-402DCED6E7CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF951541-202B-4582-A436-402DCED6E7CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F89690B-9BFB-427A-91F8-313618B25167}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F89690B-9BFB-427A-91F8-313618B25167}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F89690B-9BFB-427A-91F8-313618B25167}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F89690B-9BFB-427A-91F8-313618B25167}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +55,8 @@ Global
 		{5B1B903B-FF30-4DCE-ADC4-255B946A8549} = {D400CE32-9A12-47C5-A2FF-11BEDC7E71AC}
 		{53334D0B-EA8E-4691-A182-508F8A770C73} = {29C67B8A-161A-4D42-AA25-50FDE7342DDF}
 		{AF363103-734B-4779-BBA7-3D11ACABF1FC} = {F8168FDE-5F2B-4EDA-9F0C-83AD3CACDD15}
+		{CF951541-202B-4582-A436-402DCED6E7CD} = {D400CE32-9A12-47C5-A2FF-11BEDC7E71AC}
+		{1F89690B-9BFB-427A-91F8-313618B25167} = {D30A722F-5845-44A4-B2D9-903FC7D38426}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E5392A4-9CEC-42E6-B02B-A2CD5EA91C6D}

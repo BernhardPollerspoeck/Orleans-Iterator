@@ -1,16 +1,17 @@
-﻿using Orleans.Iterator.Abstraction;
+﻿using Orleans.Iterator.Abstraction.Server;
+using Orleans.Iterator.Dev.Grains;
 using System.Text;
 
-namespace Orleans.Iterator.Dev.Grains;
+namespace Orleans.Iterator.Dev.Server.Grains;
 
 public class AggregateGrain : Grain, IAggregateGrain
 {
     #region fields
-    private readonly IGrainIterator _grainIterator;
+    private readonly IServerGrainIterator _grainIterator;
     #endregion
 
     #region ctor
-    public AggregateGrain(IGrainIterator grainIterator)
+    public AggregateGrain(IServerGrainIterator grainIterator)
     {
         _grainIterator = grainIterator;
     }

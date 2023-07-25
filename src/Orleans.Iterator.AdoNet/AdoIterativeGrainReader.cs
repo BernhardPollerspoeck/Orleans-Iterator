@@ -6,15 +6,14 @@ using System.Collections;
 using System.Data.Common;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-using Orleans.Iterator.Abstraction;
 using Orleans.Iterator.AdoNet.MainPackageCode;
 using Orleans.Storage;
 using Orleans.Iterator.AdoNet.QueryProviders;
-using System.Windows.Input;
+using Orleans.Iterator.Abstraction.Server;
 
 namespace Orleans.Iterator.AdoNet;
 
-public class AdoIterativeGrainReader<IGrainInterface> : IIterativeGrainReader
+public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainReader
     where IGrainInterface : IGrain
 {
     #region fields
@@ -75,7 +74,7 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeGrainReader
     #endregion
 
     #region IEnumerable<GrainId>
-    public IEnumerator<GrainId> GetEnumerator()
+    public IEnumerator<GrainId?> GetEnumerator()
     {
         if (!ReadAllowed)
         {
@@ -147,7 +146,7 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeGrainReader
         if (n0 is not 0L)//guid key
         {
             //TODO: implement
-            var guidData = BitConverter.GetBytes(n0).Concat(BitConverter.GetBytes(n1));
+            //var guidData = BitConverter.GetBytes(n0).Concat(BitConverter.GetBytes(n1));
 
         }
         else if (n1 is not 0L)//long key

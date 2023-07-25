@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Orleans.Iterator.Abstraction;
+using Orleans.Iterator.Abstraction.Server;
 
 namespace Orleans.Iterator.AdoNet.Extensions;
 public static class HostExtensions
@@ -15,7 +15,7 @@ public static class HostExtensions
     private static ISiloBuilder UseAdoNetGrainIterator(this ISiloBuilder builder, Action<OptionsBuilder<AdoNetGrainIteratorOptions>> configureOptions)
     {
         configureOptions?.Invoke(builder.Services.AddOptions<AdoNetGrainIteratorOptions>());
-        builder.Services.AddSingleton<IGrainIterator, AdoGrainIterator>();
+        builder.Services.AddSingleton<IServerGrainIterator, AdoGrainIterator>();
         return builder;
     }
 

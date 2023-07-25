@@ -1,21 +1,24 @@
-﻿using Orleans.Runtime;
-using System.Buffers.Text;
-using System.Text;
+﻿using Orleans.Iterator.Dev.Grains;
+using Orleans.Runtime;
 
-namespace Orleans.Iterator.Dev.Grains;
+namespace Orleans.Iterator.Dev.Server.Grains;
 
 public class ReverseGrain : Grain, IReverseGrain
 {
+    #region fields
     private readonly IPersistentState<ReverseState> _state;
+    #endregion
 
+    #region ctor
     public ReverseGrain(
         [PersistentState("Reverserino","STORE_NAME")]
         IPersistentState<ReverseState> state)
     {
         _state = state;
     }
+    #endregion
 
-
+    #region IReverseGrain
     public async Task<string> Reverse()
     {
         if (_state is { State.Reverse.Length: > 0 })
@@ -32,18 +35,5 @@ public class ReverseGrain : Grain, IReverseGrain
 
         return reversed;
     }
-
-
-    public static bool TryGetIntegerKey(GrainId grainId, out long key, out string? keyExt)
-    {
-        keyExt = null;
-        var keyString = grainId.Key.AsSpan();
-        if (keyString.IndexOf((byte)'+') is int index && index >= 0)
-        {
-            keyExt = Encoding.UTF8.GetString(keyString[(index + 1)..]);
-            keyString = keyString[..index];
-        }
-
-        return Utf8Parser.TryParse(keyString, out key, out var len, 'X') && len == keyString.Length;
-    }
+    #endregion
 }

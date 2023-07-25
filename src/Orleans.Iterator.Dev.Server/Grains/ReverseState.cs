@@ -1,4 +1,4 @@
-﻿namespace Orleans.Iterator.Dev.Grains;
+﻿namespace Orleans.Iterator.Dev.Server.Grains;
 
 public class ReverseState
 {

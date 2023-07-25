@@ -14,13 +14,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="https:\github.com\BernhardPollerspoeck\Orleans-Iterator\blob\master\README.md" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Orleans.Iterator.Abstraction\Orleans.Iterator.Abstraction.csproj" />
     <PackageReference Include="MySql.Data" Version="8.0.32" />
     <PackageReference Include="Microsoft.Orleans.Persistence.AdoNet" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Orleans.Sdk" Version="7.0.0" />
   </ItemGroup>
 
 </Project>

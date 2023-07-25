@@ -1,17 +1,7 @@
-﻿namespace Orleans.Iterator.Abstraction;
+﻿using Orleans.Runtime;
 
-/// <summary>
-/// The main injected Iterator service that creates, configures and returns the readers
-/// </summary>
-public interface IGrainIterator
+namespace Orleans.Iterator.Abstraction;
+
+public interface IGrainIterator : IAsyncEnumerable<GrainId>
 {
-    /// <summary>
-    /// Returns a preconfigured reader for the current persistence provider.
-    /// </summary>
-    /// <typeparam name="TGrainInterface"></typeparam>
-    /// <param name="grainTypeString"></param>
-    /// <returns></returns>
-    Task<IIterativeGrainReader> GetReader<TGrainInterface>(string grainTypeString)
-        where TGrainInterface : IGrain;
-
 }
