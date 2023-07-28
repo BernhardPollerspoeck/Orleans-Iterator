@@ -6,7 +6,7 @@ The iterator returns only the useable GrainId`s to prevent any activation of gra
 ## Packages
 | Package | Information | Version |
 |---------|-------------|---------|
-| Orleans.Iterator.Abstraction | Core abstraction layer containing all interfaces. All Implementation Packages depend on this. | ![Nuget](https://img.shields.io/nuget/v/Orleans.Iterator.Abstraction?logo=NuGet&color=00aa00) |
+| Orleans.Iterator.Abstraction | Core abstraction layer containing all interfaces and provider agnostic implementations used by the client. All Implementation Packages depend on this. | ![Nuget](https://img.shields.io/nuget/v/Orleans.Iterator.Abstraction?logo=NuGet&color=00aa00) |
 | Orleans.Iterator.AdoNet | Implements the Reader for the Ado.Net Providers. | ![Nuget](https://img.shields.io/nuget/v/Orleans.Iterator.AdoNet?logo=NuGet&color=00aa00) |
 
 ## Sample Explaination
