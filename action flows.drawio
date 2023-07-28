@@ -1,0 +1,46 @@
+<mxfile host="app.diagrams.net" modified="2023-07-28T17:40:16.672Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="KZgrBiajyG6MT18lwE1Z" version="21.6.5" type="device">
+  <diagram name="Seite-1" id="qPY-HCbAXgNEvW4PMWzV">
+    <mxGraphModel dx="973" dy="831" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="JxxPql67Ojmffoyq4T9h-1" value="host.Services.GetRequiredService&amp;lt;IIteratorFactory&amp;gt;()" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="10" y="10" width="370" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="JxxPql67Ojmffoyq4T9h-2" value="iteratorFactory.CreateIterator&amp;lt;IReverseGrain&amp;gt;(&quot;Reverserino&quot;);" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="10" y="60" width="370" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="JxxPql67Ojmffoyq4T9h-3" value="await foreach (var entry in iterator)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="10" y="170" width="370" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="JxxPql67Ojmffoyq4T9h-4" value="new GrainIterator&amp;lt;TGrainInterface&amp;gt;(client, storeName);" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="10" y="110" width="490" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="JxxPql67Ojmffoyq4T9h-5" value="clusterClient.GetGrain&amp;lt;IIteratorGrain&amp;lt;TGrainInterface&amp;gt;&amp;gt;(Guid.NewGuid().ToString());" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="10" y="140" width="490" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="JxxPql67Ojmffoyq4T9h-6" value="new AsyncGrainEnumerator&amp;lt;TGrainInterface&amp;gt;(_grain, _storeName);" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="10" y="220" width="490" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="JxxPql67Ojmffoyq4T9h-7" value="await _grain.Initialize(_storeName);" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="10" y="250" width="490" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="JxxPql67Ojmffoyq4T9h-8" value="&lt;div&gt;_reader = await _serverGrainIterator.GetReader&amp;lt;TGrainInterface&amp;gt;(storeName);&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; await _reader.StartRead(CancellationToken.None);&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; _enumerator = _reader.GetEnumerator();&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="280" width="450" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="JxxPql67Ojmffoyq4T9h-9" value="_current = await _grain.GetNextItem();" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="10" y="410" width="420" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="JxxPql67Ojmffoyq4T9h-10" value="&lt;div&gt;return _enumerator?.MoveNext() is true &amp;amp;&amp;amp; _enumerator.Current.HasValue&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; ? Task.FromResult(_enumerator.Current)&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; : Task.FromResult&amp;lt;GrainId?&amp;gt;(null);&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="440" width="450" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="JxxPql67Ojmffoyq4T9h-11" value="(IIterativeServerGrainReader)new AdoIterativeGrainReader&amp;lt;TGrainInterface&amp;gt;(" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="350" width="450" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="JxxPql67Ojmffoyq4T9h-12" value="Task&amp;lt;bool&amp;gt; StartRead(CancellationToken cancellationToken)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="380" width="450" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
