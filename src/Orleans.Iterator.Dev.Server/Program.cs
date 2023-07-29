@@ -26,6 +26,7 @@ builder.UseOrleans((hostContext, siloBuilder) =>
         {
             o.Invariant = "MySql.Data.MySqlClient";
             o.ConnectionString = CONNECTION;
+            o.IgnoreNullState = true;
         })
 );
 

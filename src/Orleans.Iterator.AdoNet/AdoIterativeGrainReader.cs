@@ -130,7 +130,7 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainRea
     private void SetQuery(DbCommand command)
     {
         var queryProvider = QueryProviderFactory.CreateProvider(_options.Invariant);
-        command.CommandText = queryProvider.GetSelectGrainIdQuery();
+        command.CommandText = queryProvider.GetSelectGrainIdQuery(_options.IgnoreNullState);
     }
     #endregion
 

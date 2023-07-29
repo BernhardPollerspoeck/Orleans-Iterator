@@ -18,5 +18,10 @@ public class AdoNetGrainIteratorOptions
     /// The invariant name for storage.
     /// </summary>
     public string Invariant { get; set; } = DEFAULT_ADONET_INVARIANT;
+
+    /// <summary>
+    /// Should null states be ignored or returned
+    /// </summary>
+    public bool IgnoreNullState { get; set; }
 }
 

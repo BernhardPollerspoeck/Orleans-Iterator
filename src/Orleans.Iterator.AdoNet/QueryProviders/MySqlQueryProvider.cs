@@ -2,9 +2,9 @@
 
 internal class MySqlQueryProvider : IQueryProvider
 {
-    public string GetSelectGrainIdQuery()
+    public string GetSelectGrainIdQuery(bool ignoreNullState)
     {
-        return @"SELECT
+        return @$"SELECT
                 GrainIdN0,  
                 GrainIdN1, 
                 GrainIdExtensionString 
@@ -12,6 +12,7 @@ internal class MySqlQueryProvider : IQueryProvider
             WHERE 
             	ServiceId = @serviceId AND @ServiceId IS NOT NULL
             	AND GrainTypeString = @grainTypeString AND grainTypeString IS NOT NULL
-                AND GrainTypeHash = @grainTypeHash AND @grainTypeHash IS NOT NULL;";
+                AND GrainTypeHash = @grainTypeHash AND @grainTypeHash IS NOT NULL
+                {(ignoreNullState ? "AND PayloadBinary IS NOT NULL" : string.Empty)};";
     }
 }
