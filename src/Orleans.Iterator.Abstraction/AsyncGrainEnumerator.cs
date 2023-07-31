@@ -28,11 +28,8 @@ public class AsyncGrainEnumerator<TGrainInterface> : IAsyncEnumerator<GrainId>
     {
         if (!_initialized)
         {
-            _initialized = await _grain.Initialize(_storeName);
-        }
-        if (!_initialized)
-        {
-            throw new InvalidOperationException("Could not initialize async remote iterator");
+            await _grain.Initialize(_storeName);
+            _initialized = true;
         }
         _current = await _grain.GetNextItem();
         return _current.HasValue;
