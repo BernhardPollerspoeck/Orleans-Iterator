@@ -26,7 +26,6 @@ public class AdoGrainIterator : IServerGrainIterator
             (IIterativeServerGrainReader)new AdoIterativeGrainReader<TGrainInterface>(
                 storageOptions,
                 clusterOptions,
-                _serviceProvider,
                 grainTypeString));
     }
     #endregion
