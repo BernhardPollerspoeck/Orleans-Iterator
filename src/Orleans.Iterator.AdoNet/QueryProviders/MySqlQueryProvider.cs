@@ -10,7 +10,8 @@ internal class MySqlQueryProvider : IQueryProvider
         return @$"SELECT
                 GrainIdN0,  
                 GrainIdN1, 
-                GrainIdExtensionString 
+                GrainIdExtensionString,
+                GrainTypeString
             FROM orleansstorage            
             WHERE 
             	ServiceId = @serviceId AND @ServiceId IS NOT NULL

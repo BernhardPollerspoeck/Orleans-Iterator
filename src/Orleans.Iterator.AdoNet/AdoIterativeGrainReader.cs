@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using Orleans.Configuration;
-using Orleans.Metadata;
 using Orleans.Runtime;
 using System.Collections;
 using System.Data.Common;
-using Microsoft.Extensions.DependencyInjection;
 using Orleans.Iterator.AdoNet.MainPackageCode;
 using Orleans.Iterator.AdoNet.QueryProviders;
 using Orleans.Iterator.Abstraction.Server;
@@ -17,11 +15,9 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainRea
     #region fields
     private readonly AdoNetGrainIteratorOptions _options;
     private readonly string _serviceId;
-    private readonly IServiceProvider _serviceProvider;
     private readonly string[] _storageTypeString;
 
     private DbDataReader? _reader;
-    private GrainType? _concreteGrainType;
     private DbConnection? _connection;
     private DbCommand? _command;
     #endregion
@@ -30,12 +26,10 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainRea
     public AdoIterativeGrainReader(
         IOptions<AdoNetGrainIteratorOptions> options,
         IOptions<ClusterOptions> clusterOptions,
-        IServiceProvider serviceProvider,
         params string[] storageTypeString)
     {
         _options = options.Value;
         _serviceId = clusterOptions.Value.ServiceId;
-        _serviceProvider = serviceProvider;
         _storageTypeString = storageTypeString;
     }
     #endregion
@@ -45,7 +39,6 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainRea
 
     public async Task<bool> StartRead(CancellationToken cancellationToken)
     {
-        ResolveConcreteGrainType();
         _connection = await CreateOpenedConnection();
         _command = CreateCommand(_connection);
         SetQuery(_command);
@@ -83,8 +76,9 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainRea
             var n0 = _reader.GetInt64(0);
             var n1 = _reader.GetInt64(1);
             var extString = _reader.IsDBNull(2) ? null : _reader.GetString(2);
+            var type = _reader.GetString(3);
 
-            var grainId = GetGrainId(n0, n1, extString);
+            var grainId = GetGrainId(n0, n1, extString, type);
             if (grainId.HasValue)
             {
                 yield return grainId.Value;
@@ -102,14 +96,6 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainRea
     #endregion
 
     #region init helper
-    private void ResolveConcreteGrainType()
-    {
-        var interfaceResolver = _serviceProvider.GetRequiredService<GrainInterfaceTypeResolver>();
-        var grainTypeResolver = _serviceProvider.GetRequiredService<GrainInterfaceTypeToGrainTypeResolver>();
-
-        var interfaceId = interfaceResolver.GetGrainInterfaceType(typeof(IGrainInterface));
-        _concreteGrainType = grainTypeResolver.GetGrainType(interfaceId);
-    }
     private async Task<DbConnection> CreateOpenedConnection()
     {
         var connection = DbConnectionFactory.CreateConnection(_options.Invariant, _options.ConnectionString);
@@ -134,14 +120,8 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainRea
     #endregion
 
     #region converter
-    private GrainId? GetGrainId(long n0, long n1, string? extString)
+    private static GrainId? GetGrainId(long n0, long n1, string? extString, string grainTypeString)
     {
-        //we did not resolve the concrete type. so we cant return a id based on the type
-        if (!_concreteGrainType.HasValue)
-        {
-            return null;
-        }
-
         if (n0 is not 0L)//guid key
         {
             //TODO: implement
@@ -150,11 +130,11 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainRea
         }
         else if (n1 is not 0L)//long key
         {
-            return GrainId.Create(_concreteGrainType.Value, n1.ToString("X").ToLower());
+            return GrainId.Create(grainTypeString, n1.ToString("X").ToLower());
         }
         else if (extString is not null)//string key
         {
-            return GrainId.Create(_concreteGrainType.Value, extString);
+            return GrainId.Create(grainTypeString, extString);
         }
 
         return null;

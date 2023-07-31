@@ -4,6 +4,7 @@ using Orleans.Configuration;
 using Orleans.Iterator.Dev.Grains;
 using Orleans.Iterator.Abstraction;
 using Orleans.Iterator.Abstraction.Abstraction;
+using Orleans.Runtime;
 
 var builder = Host.CreateDefaultBuilder(args);
 
@@ -36,14 +37,22 @@ await host.StartAsync();
 
 var client = host.Services.GetRequiredService<IClusterClient>();
 
-var grain = client.GetGrain<IReverseGrain>("aaa");
-var rev = await grain.Reverse();
+await client.GetGrain<IReverseGrain>(GrainId.Create("Reversed", "abc")).Reverse();
+await client.GetGrain<IReverseGrain>(GrainId.Create("Reversed", "aaa")).Reverse();
+await client.GetGrain<IReverseGrain>(GrainId.Create("Reversed", "ctp")).Reverse();
+await client.GetGrain<IReverseGrain>(GrainId.Create("Reverse", "abc")).Reverse();
+await client.GetGrain<IReverseGrain>(GrainId.Create("Reverse", "aaa")).Reverse();
+await client.GetGrain<IReverseGrain>(GrainId.Create("Reverse", "ctp")).Reverse();
+
+
+
+
 
 
 
 //with this iterator factory you can create a iterator on the server to be consumed at the client.
 var iteratorFactory = host.Services.GetRequiredService<IIteratorFactory>();
-var iterator = iteratorFactory.CreateIterator<IReverseGrain>("Reverserino");
+var iterator = iteratorFactory.CreateIterator<IReverseGrain>("Reverse", "Reversed");
 
 await foreach (var entry in iterator)
 {

@@ -20,19 +20,11 @@ public class IteratorGrain<TGrainInterface> : Grain, IIteratorGrain<TGrainInterf
     #endregion
 
     #region IIteratorGrain<TGrainInterface>
-    public async Task<bool> Initialize(params string[] storeName)
+    public async Task Initialize(params string[] storeName)
     {
-        try
-        {
-            _reader = await _serverGrainIterator.GetReader<TGrainInterface>(storeName);
-            await _reader.StartRead(CancellationToken.None);
-            _enumerator = _reader.GetEnumerator();
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
+        _reader = await _serverGrainIterator.GetReader<TGrainInterface>(storeName);
+        await _reader.StartRead(CancellationToken.None);
+        _enumerator = _reader.GetEnumerator();
     }
 
     public Task<GrainId?> GetNextItem()
