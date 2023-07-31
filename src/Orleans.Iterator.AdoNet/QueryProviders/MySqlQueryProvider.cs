@@ -2,8 +2,11 @@
 
 internal class MySqlQueryProvider : IQueryProvider
 {
-    public string GetSelectGrainIdQuery(bool ignoreNullState)
+    public string GetSelectGrainIdQuery(bool ignoreNullState, int grainTypeStringCount = 1)
     {
+        var gts = string.Join(
+            ", ",
+            Enumerable.Range(1, grainTypeStringCount).Select(x => $"@gts{x}"));
         return @$"SELECT
                 GrainIdN0,  
                 GrainIdN1, 
@@ -11,8 +14,7 @@ internal class MySqlQueryProvider : IQueryProvider
             FROM orleansstorage            
             WHERE 
             	ServiceId = @serviceId AND @ServiceId IS NOT NULL
-            	AND GrainTypeString = @grainTypeString AND grainTypeString IS NOT NULL
-                AND GrainTypeHash = @grainTypeHash AND @grainTypeHash IS NOT NULL
+            	AND GrainTypeString in ({gts}) AND grainTypeString IS NOT NULL
                 {(ignoreNullState ? "AND PayloadBinary IS NOT NULL" : string.Empty)};";
     }
 }

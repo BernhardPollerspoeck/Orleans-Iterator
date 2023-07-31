@@ -20,7 +20,7 @@ public class IteratorGrain<TGrainInterface> : Grain, IIteratorGrain<TGrainInterf
     #endregion
 
     #region IIteratorGrain<TGrainInterface>
-    public async Task<bool> Initialize(string storeName)
+    public async Task<bool> Initialize(params string[] storeName)
     {
         try
         {

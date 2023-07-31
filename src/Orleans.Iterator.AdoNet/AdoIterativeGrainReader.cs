@@ -4,10 +4,8 @@ using Orleans.Metadata;
 using Orleans.Runtime;
 using System.Collections;
 using System.Data.Common;
-using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Orleans.Iterator.AdoNet.MainPackageCode;
-using Orleans.Storage;
 using Orleans.Iterator.AdoNet.QueryProviders;
 using Orleans.Iterator.Abstraction.Server;
 
@@ -20,7 +18,7 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainRea
     private readonly AdoNetGrainIteratorOptions _options;
     private readonly string _serviceId;
     private readonly IServiceProvider _serviceProvider;
-    private readonly string _storageTypeString;
+    private readonly string[] _storageTypeString;
 
     private DbDataReader? _reader;
     private GrainType? _concreteGrainType;
@@ -33,7 +31,7 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainRea
         IOptions<AdoNetGrainIteratorOptions> options,
         IOptions<ClusterOptions> clusterOptions,
         IServiceProvider serviceProvider,
-        string storageTypeString)
+        params string[] storageTypeString)
     {
         _options = options.Value;
         _serviceId = clusterOptions.Value.ServiceId;
@@ -120,17 +118,18 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainRea
     }
     private DbCommand CreateCommand(DbConnection connection)
     {
-        var hasher = new OrleansDefaultHasher();
         var command = connection.CreateCommand();
         command.AddParameter("@serviceId", _serviceId);
-        command.AddParameter("@grainTypeHash", hasher.Hash(Encoding.UTF8.GetBytes(_storageTypeString)));
-        command.AddParameter("@grainTypeString", _storageTypeString);
+        for (int i = 1; i <= _storageTypeString.Length; i++)
+        {
+            command.AddParameter($"@gts{i}", _storageTypeString[i - 1]);
+        }
         return command;
     }
     private void SetQuery(DbCommand command)
     {
         var queryProvider = QueryProviderFactory.CreateProvider(_options.Invariant);
-        command.CommandText = queryProvider.GetSelectGrainIdQuery(_options.IgnoreNullState);
+        command.CommandText = queryProvider.GetSelectGrainIdQuery(_options.IgnoreNullState, _storageTypeString.Length);
     }
     #endregion
 

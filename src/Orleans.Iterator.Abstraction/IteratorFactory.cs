@@ -16,7 +16,7 @@ public class IteratorFactory : IIteratorFactory
     #endregion
 
     #region IIteratorFactory
-    public IGrainIterator CreateIterator<TGrainInterface>(string storeName)
+    public IGrainIterator CreateIterator<TGrainInterface>(params string[] storeName)
         where TGrainInterface : IGrain
     {
         var client = _serviceProvider.GetRequiredService<IClusterClient>();

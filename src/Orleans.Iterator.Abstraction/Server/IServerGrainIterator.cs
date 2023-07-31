@@ -11,7 +11,7 @@ public interface IServerGrainIterator
     /// <typeparam name="TGrainInterface"></typeparam>
     /// <param name="grainTypeString"></param>
     /// <returns></returns>
-    Task<IIterativeServerGrainReader> GetReader<TGrainInterface>(string grainTypeString)
+    Task<IIterativeServerGrainReader> GetReader<TGrainInterface>(params string[] grainTypeString)
         where TGrainInterface : IGrain;
 
 }

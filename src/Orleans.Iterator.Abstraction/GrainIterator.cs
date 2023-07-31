@@ -6,12 +6,12 @@ public class GrainIterator<TGrainInterface> : IGrainIterator
     where TGrainInterface : IGrain
 {
     #region fields
-    private readonly string _storeName;
+    private readonly string[] _storeName;
     private readonly IIteratorGrain<TGrainInterface> _grain;
     #endregion
 
     #region ctor
-    public GrainIterator(IClusterClient clusterClient, string storeName)
+    public GrainIterator(IClusterClient clusterClient, params string[] storeName)
     {
         _grain = clusterClient.GetGrain<IIteratorGrain<TGrainInterface>>(Guid.NewGuid().ToString());
         _storeName = storeName;
