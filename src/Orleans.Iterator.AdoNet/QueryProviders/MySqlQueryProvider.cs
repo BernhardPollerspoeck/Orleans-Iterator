@@ -12,7 +12,7 @@ internal class MySqlQueryProvider : IQueryProvider
                 GrainIdN1, 
                 GrainIdExtensionString,
                 GrainTypeString
-            FROM orleansstorage            
+            FROM OrleansStorage            
             WHERE 
             	ServiceId = @serviceId AND @ServiceId IS NOT NULL
             	AND GrainTypeString in ({gts}) AND grainTypeString IS NOT NULL
