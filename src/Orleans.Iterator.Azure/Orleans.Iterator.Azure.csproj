@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>0.4.3</Version>
+    <Title>Orleans.Iterator.Azure</Title>
+    <Authors>Bernhard Pollerspöck</Authors>
+    <Company>qsp</Company>
+    <Copyright>https://github.com/BernhardPollerspoeck/Orleans-Iterator/blob/master/LICENSE.txt</Copyright>
+    <PackageProjectUrl>https://github.com/BernhardPollerspoeck/Orleans-Iterator</PackageProjectUrl>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Orleans.Iterator.Abstraction\Orleans.Iterator.Abstraction.csproj" />
+    <PackageReference Include="Microsoft.Orleans.Sdk" Version="7.0.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
+  </ItemGroup>
+
+
+</Project>
