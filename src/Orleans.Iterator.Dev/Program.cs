@@ -10,10 +10,11 @@ var builder = Host.CreateDefaultBuilder(args);
 
 const string? CONNECTION = "server=localhost;database=orleansIterator;user=root;password=unsecure1Admin";
 
+var invariant = "MySql.Data.MySqlClient";
+var connectionString = CONNECTION;
+
 builder.UseOrleansClient(clientBuilder =>
 {
-	var invariant = "MySql.Data.MySqlClient";
-	var connectionString = CONNECTION;
 
 	clientBuilder.UseAdoNetClustering(options =>
 	{
