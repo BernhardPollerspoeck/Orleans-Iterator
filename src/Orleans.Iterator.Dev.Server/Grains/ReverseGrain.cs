@@ -3,7 +3,7 @@ using Orleans.Runtime;
 
 namespace Orleans.Iterator.Dev.Server.Grains;
 
-[GrainType("Reverse")]
+[GrainType("Reverse2")]
 public class ReverseGrain : Grain, IReverseGrain
 {
     #region fields
@@ -38,7 +38,7 @@ public class ReverseGrain : Grain, IReverseGrain
     #endregion
 }
 
-[GrainType("Reversed")]
+[GrainType("Reversed2")]
 public class AnotherReverseGrain : Grain, IReverseGrain
 {
     #region fields

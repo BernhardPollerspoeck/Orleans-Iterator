@@ -16,11 +16,11 @@ public class IteratorFactory : IIteratorFactory
     #endregion
 
     #region IIteratorFactory
-    public IGrainIterator CreateIterator<TGrainInterface>(params string[] storeName)
+    public IGrainIterator CreateIterator<TGrainInterface>(params GrainDescriptor[] gainDescriptions)
         where TGrainInterface : IGrain
     {
         var client = _serviceProvider.GetRequiredService<IClusterClient>();
-        return new GrainIterator<TGrainInterface>(client, storeName);
+        return new GrainIterator<TGrainInterface>(client, gainDescriptions);
     }
     #endregion
 }

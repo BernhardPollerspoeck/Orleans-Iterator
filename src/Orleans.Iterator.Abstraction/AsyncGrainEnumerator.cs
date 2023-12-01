@@ -7,17 +7,17 @@ public class AsyncGrainEnumerator<TGrainInterface> : IAsyncEnumerator<GrainId>
 {
     #region fields
     private readonly IIteratorGrain<TGrainInterface> _grain;
-    private readonly string[] _storeName;
+    private readonly GrainDescriptor[] _grainDescriptions;
 
     private bool _initialized;
     private GrainId? _current;
     #endregion
 
     #region ctor
-    public AsyncGrainEnumerator(IIteratorGrain<TGrainInterface> grain, params string[] storeName)
+    public AsyncGrainEnumerator(IIteratorGrain<TGrainInterface> grain, params GrainDescriptor[] grainDescriptions)
     {
         _grain = grain;
-        _storeName = storeName;
+		_grainDescriptions = grainDescriptions;
     }
     #endregion
 
@@ -28,7 +28,7 @@ public class AsyncGrainEnumerator<TGrainInterface> : IAsyncEnumerator<GrainId>
     {
         if (!_initialized)
         {
-            await _grain.Initialize(_storeName);
+            await _grain.Initialize(_grainDescriptions);
             _initialized = true;
         }
         _current = await _grain.GetNextItem();
