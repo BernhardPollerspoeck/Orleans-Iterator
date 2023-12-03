@@ -20,7 +20,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="Microsoft.Orleans.Clustering.AdoNet" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="7.1.2" />
     <PackageReference Include="Microsoft.Orleans.Persistence.AdoNet" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="7.1.2" />
     <PackageReference Include="MySql.Data" Version="8.0.32" />
     <PackageReference Include="Microsoft.Orleans.Server" Version="7.0.0" />
   </ItemGroup>
@@ -29,6 +31,7 @@
     <ProjectReference Include="..\..\Orleans.Iterator.Dev.Grains\Orleans.Iterator.Dev.Grains.csproj" />
     <ProjectReference Include="..\Orleans.Iterator.Abstraction\Orleans.Iterator.Abstraction.csproj" />
     <ProjectReference Include="..\Orleans.Iterator.AdoNet\Orleans.Iterator.AdoNet.csproj" />
+    <ProjectReference Include="..\Orleans.Iterator.Azure\Orleans.Iterator.Azure.csproj" />
   </ItemGroup>
 
 

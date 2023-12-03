@@ -1,5 +1,6 @@
 ﻿using Orleans.Configuration;
 using Orleans.Iterator.AdoNet.Extensions;
+using Orleans.Iterator.Azure.Extensions;
 
 var configuration = new ConfigurationBuilder()
 	.SetBasePath(Directory.GetCurrentDirectory())
@@ -11,6 +12,8 @@ var configuration = new ConfigurationBuilder()
 var storageType = configuration["StorageType"] ?? "";
 var adoNetConnectionString = configuration["AdoNet:ConnectionString"] ?? "";
 var adoNetInvariant = configuration["AdoNet:Invariant"] ?? "";
+var azureStorageConnectionString = configuration["AzureStorage:ConnectionString"] ?? "";
+var azureStorageContainerName = configuration["AzureStorage:ContainerName"] ?? "";
 
 //
 // NOTE: storageName is the 2nd parameter in the PersistentState grain attribute,
@@ -61,6 +64,27 @@ builder.UseOrleans((hostContext, siloBuilder) =>
 				});
 			break;
 		
+		case "AzureStorage":
+			siloBuilder
+				.UseAzureStorageClustering(o =>
+					o.ConfigureTableServiceClient(azureStorageConnectionString)
+				);
+
+			foreach (var storageName in storageNames)
+			{
+				siloBuilder
+					.AddAzureBlobGrainStorage(storageName,
+						o => { o.ConfigureBlobServiceClient(azureStorageConnectionString); }
+					);
+			}
+			
+			siloBuilder
+			.UseAzureBlobGrainIterator(o =>
+				{
+					o.ConnectionString = azureStorageConnectionString;
+					o.ContainerName = azureStorageContainerName;
+				});
+			break;
 	}
 	
 	siloBuilder

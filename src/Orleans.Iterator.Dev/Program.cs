@@ -17,6 +17,7 @@ var configuration = new ConfigurationBuilder()
 var storageType = configuration["StorageType"] ?? "";
 var adoNetConnectionString = configuration["AdoNet:ConnectionString"] ?? "";
 var adoNetInvariant = configuration["AdoNet:Invariant"] ?? "";
+var azureStorageConnectionString = configuration["AzureStorage:ConnectionString"] ?? "";
 
 //
 // Note: stateName and storageName are the 1st and 2nd parameters in the
@@ -49,6 +50,12 @@ builder.UseOrleansClient(clientBuilder =>
 			});
 			break;
 
+		case "AzureStorage":
+			clientBuilder
+				.UseAzureStorageClustering(
+					options => options.ConfigureTableServiceClient(azureStorageConnectionString)
+				);
+			break;
 	}
 
 	clientBuilder

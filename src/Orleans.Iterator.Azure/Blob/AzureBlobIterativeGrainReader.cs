@@ -32,8 +32,8 @@ public class AzureBlobIterativeGrainReader<IGrainInterface> : IIterativeServerGr
 	public Task<bool> StartRead(CancellationToken cancellationToken)
 	{
 		_containerClient = new BlobContainerClient(
-			_storageOptions.GrainStorageConnectionString,
-			_storageOptions.GrainStorageContainerName);
+			_storageOptions.ConnectionString,
+			_storageOptions.ContainerName);
 
 		return Task.FromResult(ReadAllowed);
 	}
