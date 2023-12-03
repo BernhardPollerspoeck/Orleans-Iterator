@@ -1,38 +1,75 @@
 ﻿using Orleans.Configuration;
 using Orleans.Iterator.AdoNet.Extensions;
 
+var configuration = new ConfigurationBuilder()
+	.SetBasePath(Directory.GetCurrentDirectory())
+	.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+	.AddEnvironmentVariables()
+	.AddUserSecrets<Program>()
+	.Build();
+
+var storageType = configuration["StorageType"] ?? "";
+var adoNetConnectionString = configuration["AdoNet:ConnectionString"] ?? "";
+var adoNetInvariant = configuration["AdoNet:Invariant"] ?? "";
+
+//
+// NOTE: storageName is the 2nd parameter in the PersistentState grain attribute,
+// for example:
+//
+// public ReverseGrain(
+//     [PersistentState("Reverse","STORE_NAME")]
+//     IPersistentState<ReverseState> state)
+// {
+//    ...
+// }
+//
+var storageNames = new[]
+{
+	"STORE_NAME",
+};
+
 var builder = Host.CreateDefaultBuilder(args);
 
-const string? CONNECTION = "server=localhost;database=orleansIterator;user=root;password=unsecure1Admin";
-
 builder.UseOrleans((hostContext, siloBuilder) =>
+{
+	switch (storageType)
+	{
+		case "AdoNet":
+			siloBuilder
+				.UseAdoNetClustering(o =>
+				{
+					o.Invariant = adoNetInvariant;
+					o.ConnectionString = adoNetConnectionString;
+				});
+			
+			foreach (var storageName in storageNames)
+			{
+				siloBuilder
+					.AddAdoNetGrainStorage(storageName, o =>
+					{
+						o.Invariant = adoNetInvariant;
+						o.ConnectionString = adoNetConnectionString;
+					});
+			}
+			
+			siloBuilder
+				.UseAdoNetGrainIterator(o =>
+				{
+					o.Invariant = adoNetInvariant;
+					o.ConnectionString = adoNetConnectionString;
+					o.IgnoreNullState = true;
+				});
+			break;
+		
+	}
+	
 	siloBuilder
-		.UseAdoNetClustering(o =>
-		{
-			o.Invariant = "MySql.Data.MySqlClient";
-			o.ConnectionString = CONNECTION;
-		})
-		.AddAdoNetGrainStorage("STORE_NAME", options =>
-		{
-			options.Invariant = "MySql.Data.MySqlClient";
-			options.ConnectionString = CONNECTION;
-		})
 		.Configure<ClusterOptions>(o =>
 		{
 			o.ClusterId = "iteartor";
 			o.ServiceId = "tester";
-		})
-		.UseAdoNetGrainIterator(o =>
-		{
-			o.Invariant = "MySql.Data.MySqlClient";
-			o.ConnectionString = CONNECTION;
-			o.IgnoreNullState = true;
-		})
-		//.UseAzureBlobGrainIterator(o =>
-		//{
-		//	//TODO: AZURE insert test settings
-		//})
-);
+		});
+});
 
 var host = builder.Build();
 await host.RunAsync();
