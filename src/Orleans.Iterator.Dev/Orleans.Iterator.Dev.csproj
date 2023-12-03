@@ -5,6 +5,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>77d13622-e2dd-469a-8c54-0b75e59dd15e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +18,20 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Orleans.Iterator.Dev.Grains\Orleans.Iterator.Dev.Grains.csproj" />
     <ProjectReference Include="..\Orleans.Iterator.Abstraction\Orleans.Iterator.Abstraction.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="secrets.template.json">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
