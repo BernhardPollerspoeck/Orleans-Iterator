@@ -1,6 +1,7 @@
 ﻿using Orleans.Configuration;
 using Orleans.Iterator.AdoNet.Extensions;
 using Orleans.Iterator.Azure.Extensions;
+using Orleans.Iterator.Dev.Grains;
 
 var configuration = new ConfigurationBuilder()
 	.SetBasePath(Directory.GetCurrentDirectory())
@@ -9,93 +10,79 @@ var configuration = new ConfigurationBuilder()
 	.AddUserSecrets<Program>()
 	.Build();
 
-var storageType = configuration["StorageType"] ?? "";
-var adoNetConnectionString = configuration["AdoNet:ConnectionString"] ?? "";
-var adoNetInvariant = configuration["AdoNet:Invariant"] ?? "";
-var azureStorageConnectionString = configuration["AzureStorage:ConnectionString"] ?? "";
-var azureStorageContainerName = configuration["AzureStorage:ContainerName"] ?? "";
-
-//
-// NOTE: storageName is the 2nd parameter in the PersistentState grain attribute,
-// for example:
-//
-// public ReverseGrain(
-//     [PersistentState("Reverse","STORE_NAME")]
-//     IPersistentState<ReverseState> state)
-// {
-//    ...
-// }
-//
-var storageNames = new[]
-{
-	"STORE_NAME",
-};
-
+var storageType = EStorageType.AzureBlob;
 var builder = Host.CreateDefaultBuilder(args);
 
+#region configuration
 builder.UseOrleans((hostContext, siloBuilder) =>
 {
 	switch (storageType)
 	{
-		case "AdoNet":
-			siloBuilder
-				.UseAdoNetClustering(o =>
-				{
-					o.Invariant = adoNetInvariant;
-					o.ConnectionString = adoNetConnectionString;
-				});
-			
-			foreach (var storageName in storageNames)
-			{
-				siloBuilder
-					.AddAdoNetGrainStorage(storageName, o =>
-					{
-						o.Invariant = adoNetInvariant;
-						o.ConnectionString = adoNetConnectionString;
-					});
-			}
-			
-			siloBuilder
-				.UseAdoNetGrainIterator(o =>
-				{
-					o.Invariant = adoNetInvariant;
-					o.ConnectionString = adoNetConnectionString;
-					o.IgnoreNullState = true;
-				});
+		case EStorageType.AdoNet:
+			ConfigureAdoNet(siloBuilder, configuration);
 			break;
-		
-		case "AzureStorage":
-			siloBuilder
-				.UseAzureStorageClustering(o =>
-					o.ConfigureTableServiceClient(azureStorageConnectionString)
-				);
 
-			foreach (var storageName in storageNames)
-			{
-				siloBuilder
-					.AddAzureBlobGrainStorage(storageName,
-						o => { o.ConfigureBlobServiceClient(azureStorageConnectionString); }
-					);
-			}
-			
-			siloBuilder
-			.UseAzureBlobGrainIterator(o =>
-				{
-					o.ConnectionString = azureStorageConnectionString;
-					o.ContainerName = azureStorageContainerName;
-				});
+		case EStorageType.AzureBlob:
+			ConfigureAzureBlob(siloBuilder, configuration);
 			break;
 	}
-	
+
 	siloBuilder
 		.Configure<ClusterOptions>(o =>
 		{
-			o.ClusterId = "iteartor";
+			o.ClusterId = "iterator";
 			o.ServiceId = "tester";
 		});
 });
+#endregion
 
 var host = builder.Build();
 await host.RunAsync();
 
+#region configuration
+void ConfigureAdoNet(ISiloBuilder siloBuilder, IConfiguration configuration)
+{
 
+	var adoNetConnectionString = configuration["AdoNet:ConnectionString"] ?? "";
+	var adoNetInvariant = configuration["AdoNet:Invariant"] ?? "";
+
+	siloBuilder
+		.UseAdoNetClustering(o =>
+		{
+			o.Invariant = adoNetInvariant;
+			o.ConnectionString = adoNetConnectionString;
+		})
+		.AddAdoNetGrainStorage("STORE_NAME", o =>
+		{
+			o.Invariant = adoNetInvariant;
+			o.ConnectionString = adoNetConnectionString;
+		})
+		.UseAdoNetGrainIterator(o =>
+		{
+			o.Invariant = adoNetInvariant;
+			o.ConnectionString = adoNetConnectionString;
+			o.IgnoreNullState = true;
+		});
+}
+
+static void ConfigureAzureBlob(ISiloBuilder siloBuilder, IConfiguration configuration)
+{
+	var azureStorageConnectionString = configuration["AzureStorage:ConnectionString"] ?? "";
+	var azureStorageContainerName = configuration["AzureStorage:ContainerName"] ?? "";
+
+	siloBuilder
+		.UseAzureStorageClustering(o =>
+		{
+			o.ConfigureTableServiceClient(azureStorageConnectionString);
+		})
+		.AddAzureBlobGrainStorage("STORE_NAME", o =>
+		{
+			o.ConfigureBlobServiceClient(azureStorageConnectionString);
+		})
+		.UseAzureBlobGrainIterator(o =>
+		{
+			o.ConnectionString = azureStorageConnectionString;
+			o.ContainerName = azureStorageContainerName;
+		});
+}
+#endregion

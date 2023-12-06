@@ -53,8 +53,8 @@ public class AzureBlobIterativeGrainReader<IGrainInterface> : IIterativeServerGr
 		}
 		foreach (var store in _grainDescriptions)
 		{
-			var prefix = $"{store.StateName}-{store.StorageName}";
-			var regex = new Regex($"{prefix}\\/(?<grainId>.+)\\.json");
+			var prefix = $"{store.StateName}-{store.GrainType}";
+			var regex = new Regex($"{prefix}/(?<grainId>.+).json");
 			foreach (var item in _containerClient
 				!.GetBlobs(prefix: prefix)
 				.AsPages(default)

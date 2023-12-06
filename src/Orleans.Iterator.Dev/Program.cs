@@ -14,70 +14,38 @@ var configuration = new ConfigurationBuilder()
 	.AddUserSecrets<Program>()
 	.Build();
 
-var storageType = configuration["StorageType"] ?? "";
-var adoNetConnectionString = configuration["AdoNet:ConnectionString"] ?? "";
-var adoNetInvariant = configuration["AdoNet:Invariant"] ?? "";
-var azureStorageConnectionString = configuration["AzureStorage:ConnectionString"] ?? "";
-
-//
-// Note: stateName and storageName are the 1st and 2nd parameters in the
-// PersistentState grain attribute, for example:
-//
-// public ReverseGrain(
-//     [PersistentState("Reverse","STORE_NAME")]
-//     IPersistentState<ReverseState> state)
-// {
-//    ...
-// }
-//
-var grainDescriptors = new GrainDescriptor[]
-{
-	new("Reverse2", "Reverse", "STORE_NAME"),
-	new("Reversed2", "Reversed", "STORE_NAME")
-};
-
+var storageType = EStorageType.AzureBlob;
 var builder = Host.CreateDefaultBuilder(args);
 
+#region configuration
 builder.UseOrleansClient(clientBuilder =>
 {
 	switch (storageType)
 	{
-		case "AdoNet":
-			clientBuilder.UseAdoNetClustering(options =>
-			{
-				options.Invariant = adoNetInvariant;
-				options.ConnectionString = adoNetConnectionString;
-			});
+		case EStorageType.AdoNet:
+			ConfigureAdoNet(clientBuilder, configuration);
 			break;
 
-		case "AzureStorage":
-			clientBuilder
-				.UseAzureStorageClustering(
-					options => options.ConfigureTableServiceClient(azureStorageConnectionString)
-				);
+		case EStorageType.AzureBlob:
+			ConfigureAzureBlob(clientBuilder, configuration);
 			break;
 	}
 
 	clientBuilder
 		.Configure<ClusterOptions>(o =>
 		{
-			o.ClusterId = "iteartor";
+			o.ClusterId = "iterator";
 			o.ServiceId = "tester";
 		})
 		.UseIterator()
 	;
 });
-
-
-
+#endregion
 
 var host = builder.Build();
-
-
-
-
 await host.StartAsync();
 
+#region data prep
 var client = host.Services.GetRequiredService<IClusterClient>();
 
 await client.GetGrain<IReverseGrain>(GrainId.Create("Reversed2", "abc")).Reverse();
@@ -86,14 +54,15 @@ await client.GetGrain<IReverseGrain>(GrainId.Create("Reversed2", "ctp")).Reverse
 await client.GetGrain<IReverseGrain>(GrainId.Create("Reverse2", "abc")).Reverse();
 await client.GetGrain<IReverseGrain>(GrainId.Create("Reverse2", "aaa")).Reverse();
 await client.GetGrain<IReverseGrain>(GrainId.Create("Reverse2", "ctp")).Reverse();
-
-
-
-
-
-
+#endregion
 
 //with this iterator factory you can create a iterator on the server to be consumed at the client.
+var grainDescriptors = new GrainDescriptor[]
+{
+	new("Reverse2", "Reverse"),
+	new("Reversed2", "Reversed")
+};
+
 var iteratorFactory = host.Services.GetRequiredService<IIteratorFactory>();
 var iterator = iteratorFactory
 	.CreateIterator<IReverseGrain>(grainDescriptors);
@@ -103,6 +72,27 @@ await foreach (var entry in iterator)
 	Console.WriteLine($"ID: {entry}");
 }
 
-
-
 Console.ReadLine();
+
+#region configuration
+void ConfigureAdoNet(IClientBuilder clientBuilder, IConfiguration configuration)
+{
+	var adoNetConnectionString = configuration["AdoNet:ConnectionString"] ?? "";
+	var adoNetInvariant = configuration["AdoNet:Invariant"] ?? "";
+
+	clientBuilder.UseAdoNetClustering(options =>
+	{
+		options.Invariant = adoNetInvariant;
+		options.ConnectionString = adoNetConnectionString;
+	});
+}
+
+void ConfigureAzureBlob(IClientBuilder clientBuilder, IConfiguration configuration)
+{
+	var azureStorageConnectionString = configuration["AzureStorage:ConnectionString"] ?? "";
+	clientBuilder.UseAzureStorageClustering(options =>
+	{
+		options.ConfigureTableServiceClient(azureStorageConnectionString);
+	});
+}
+#endregion

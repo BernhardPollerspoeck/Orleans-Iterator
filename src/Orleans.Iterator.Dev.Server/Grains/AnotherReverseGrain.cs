@@ -3,37 +3,30 @@ using Orleans.Runtime;
 
 namespace Orleans.Iterator.Dev.Server.Grains;
 
-[GrainType("Reverse2")]
-public class ReverseGrain : Grain, IReverseGrain
+[GrainType("Reversed2")]
+public class AnotherReverseGrain : Grain, IReverseGrain
 {
     #region fields
     private readonly IPersistentState<ReverseState> _state;
     #endregion
 
     #region ctor
-    public ReverseGrain(
-        [PersistentState("Reverse","STORE_NAME")]
+    public AnotherReverseGrain(
+        [PersistentState("Reversed","STORE_NAME")]
         IPersistentState<ReverseState> state)
     {
         _state = state;
     }
     #endregion
 
-    #region IReverseGrain
+
     public async Task<string> Reverse()
     {
-        if (_state is { State.Reverse.Length: > 0 })
-        {
-            return _state.State.Reverse;
-        }
-        var reversed = new string(this.GetPrimaryKeyString().Reverse().ToArray());
         _state.State = new()
         {
-            Reverse = reversed,
+            Reverse = this.GetPrimaryKeyString(),
         };
         await _state.WriteStateAsync();
-
-        return reversed;
+        return this.GetPrimaryKeyString();
     }
-    #endregion
 }
