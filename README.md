@@ -30,10 +30,10 @@ builder.UseOrleans((hostContext, siloBuilder) =>
             o.ConnectionString = adoNetConnectionString;
         })
         .UseAzureBlobGrainIterator(o =>
-		{
-			o.ConnectionString = azureStorageConnectionString;
-			o.ContainerName = azureStorageContainerName;
-		});
+        {
+            o.ConnectionString = azureStorageConnectionString;
+            o.ContainerName = azureStorageContainerName;
+        });
 );
 ```
 
