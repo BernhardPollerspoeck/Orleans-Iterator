@@ -14,7 +14,7 @@ var configuration = new ConfigurationBuilder()
 	.AddUserSecrets<Program>()
 	.Build();
 
-var storageType = EStorageType.AzureBlob;
+var storageType = EStorageType.AdoNet;
 var builder = Host.CreateDefaultBuilder(args);
 
 #region configuration

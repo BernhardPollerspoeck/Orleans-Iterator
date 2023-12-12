@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -15,9 +15,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Orleans.Iterator.Abstraction\Orleans.Iterator.Abstraction.csproj" />
-    <PackageReference Include="MySql.Data" Version="8.0.32" />
-    <PackageReference Include="Microsoft.Orleans.Persistence.AdoNet" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Orleans.Sdk" Version="7.0.0" />
+    <PackageReference Include="MySql.Data" Version="8.2.0" />
+    <PackageReference Include="Microsoft.Orleans.Persistence.AdoNet" Version="8.0.0-rc1" />
+    <PackageReference Include="Microsoft.Orleans.Sdk" Version="8.0.0-rc1" />
   </ItemGroup>
 
 </Project>
