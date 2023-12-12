@@ -12,8 +12,8 @@ The iterator returns only the useable GrainId`s to prevent any activation of gra
 
 ## Contributors
 
-[Berhnard Pollersp�ck](https://github.com/BernhardPollerspoeck) The core maintainer of this Project.
-[Don Alvarez](https://github.com/yoDon): Contributor and maintainer for **Orleans.Iterator.Azure**
+ - [Berhnard Pollersp�ck](https://github.com/BernhardPollerspoeck) The core maintainer of this Project.
+ - [Don Alvarez](https://github.com/yoDon): Contributor and maintainer for **Orleans.Iterator.Azure**
 
 
 ## Sample Explaination
