@@ -5,18 +5,34 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>77d13622-e2dd-469a-8c54-0b75e59dd15e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="Microsoft.Orleans.Client" Version="7.0.0" />
     <PackageReference Include="Microsoft.Orleans.Clustering.AdoNet" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="7.0.0" />
     <PackageReference Include="MySql.Data" Version="8.0.32" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Orleans.Iterator.Dev.Grains\Orleans.Iterator.Dev.Grains.csproj" />
     <ProjectReference Include="..\Orleans.Iterator.Abstraction\Orleans.Iterator.Abstraction.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="secrets.template.json">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -2,6 +2,6 @@
 
 public interface IReverseGrain : IGrainWithStringKey
 {
-    Task<string> Reverse();
+	Task<string> Reverse();
 
 }

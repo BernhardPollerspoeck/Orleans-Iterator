@@ -1,18 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Orleans.Configuration;
 using Orleans.Iterator.Abstraction;
 using Orleans.Iterator.Abstraction.Server;
 
-namespace Orleans.Iterator.AdoNet;
-public class AdoGrainIterator : IServerGrainIterator
+namespace Orleans.Iterator.Azure.Blob;
+public class AzureBlobGrainIterator : IServerGrainIterator
 {
     #region fields
     private readonly IServiceProvider _serviceProvider;
     #endregion
 
     #region ctor
-    public AdoGrainIterator(IServiceProvider serviceProvider)
+    public AzureBlobGrainIterator(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
@@ -21,12 +20,10 @@ public class AdoGrainIterator : IServerGrainIterator
     #region IServerGrainIterator
     public Task<IIterativeServerGrainReader> GetReader<TGrainInterface>(params GrainDescriptor[] grainDescriptions) where TGrainInterface : IGrain
     {
-        var storageOptions = _serviceProvider.GetRequiredService<IOptions<AdoNetGrainIteratorOptions>>();
-        var clusterOptions = _serviceProvider.GetRequiredService<IOptions<ClusterOptions>>();
+        var storageOptions = _serviceProvider.GetRequiredService<IOptions<AzureBlobGrainIteratorOptions>>();
         return Task.FromResult(
-            (IIterativeServerGrainReader)new AdoIterativeGrainReader<TGrainInterface>(
+            (IIterativeServerGrainReader)new AzureBlobIterativeGrainReader<TGrainInterface>(
                 storageOptions,
-                clusterOptions,
 				grainDescriptions));
     }
     #endregion
