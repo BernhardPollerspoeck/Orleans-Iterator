@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>0.4.2</Version>
+    <Version>7.0.0.1</Version>
     <Title>Orleans.Iterator.Abstraction</Title>
     <Authors>Bernhard Pollerspöck</Authors>
     <Company>qsp</Company>
