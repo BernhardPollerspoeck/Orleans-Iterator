@@ -11,6 +11,7 @@
     <Company>qsp</Company>
     <Copyright>https://github.com/BernhardPollerspoeck/Orleans-Iterator/blob/master/LICENSE.txt</Copyright>
     <PackageProjectUrl>https://github.com/BernhardPollerspoeck/Orleans-Iterator</PackageProjectUrl>
+    <UserSecretsId>b9e902c8-1eb8-44d3-b393-536a0c35b31b</UserSecretsId>
 
   </PropertyGroup>
 

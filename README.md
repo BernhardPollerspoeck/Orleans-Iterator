@@ -12,8 +12,8 @@ The iterator returns only the useable GrainId`s to prevent any activation of gra
 
 ## Contributors
 
-[Berhnard Pollerspöck](https://github.com/BernhardPollerspoeck) The core maintainer of this Project.
-[yoDon](https://github.com/yoDon): Contributor and maintainer for **Orleans.Iterator.Azure**
+[Berhnard Pollerspï¿½ck](https://github.com/BernhardPollerspoeck) The core maintainer of this Project.
+[Don Alvarez](https://github.com/yoDon): Contributor and maintainer for **Orleans.Iterator.Azure**
 
 
 ## Sample Explaination
@@ -46,12 +46,15 @@ builder.UseOrleansClient(clientBuilder =>
 });
 ```
 
-### Useage
-To get a working async enumerator you just need to get a factory, wich is used to request a 1 time useage iterator
+### Usage
+To get a working async enumerator you just need to get a factory, which is used to request an iterator.
+
 ```c#
 var iteratorFactory = host.Services.GetRequiredService<IIteratorFactory>();
 var iterator = iteratorFactory.CreateIterator<IReverseGrain>(new[] 
 {
+    // Example for use with grain showing [GrainType("Reverse2")]
+    // and grain constructor showing [PersistentState("Reverse","STORE_NAME")]
     new("Reverse2", "Reverse"),
 });
 
@@ -60,6 +63,22 @@ await foreach (var entry in iterator)
     Console.WriteLine($"ID: {entry}");
 }
 ```
+
+### Sample Projects: 
+
+1. If you are only using one or the other of AdoNet or Azure Storage, comment out the unused storage types in `Orleans.Iterator.Dev/program.cs` and `Orleans.Iterator.Dev.Server/program.cs`.
+
+2. Open the .NET Secrets file for the `Orleans.Iterator.Dev` project and copy into it the contents of the `Orleans.Iterator.Dev/secrets.template.json` file.
+
+3. Edit the StorageType and ConnectionString properties in the file to match your storage configuration.
+
+4. Open the .NET Secrets file for the `Orleans.Iterator.Dev.Server` project and copy into it the contents of the `Orleans.Iterator.Dev.Server/secrets.template.json` file, editing in your own connection strings as appropriate.
+
+5. Edit the StorageType and ConnectionString properties in the file to match your storage configuration.
+
+6. Start the `Orleans.Iterator.Dev.Server` project, which host the example silo.
+
+7. Start the `Orleans.Iterator.Dev` project, which hosts the example client and uses the iterator to find grains.
 
 ## Contribution
 Contributions in any way are appechiated (More providers, improvements, documentation or anything else). I Kindly ask you to create a Issue to talk about the planned changes or contact me directly on the Orleans Discord.

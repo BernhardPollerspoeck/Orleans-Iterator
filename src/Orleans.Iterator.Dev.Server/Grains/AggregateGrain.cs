@@ -22,7 +22,7 @@ public class AggregateGrain : Grain, IAggregateGrain
 	public async Task<string> DoWork()
 	{
 		var result = new StringBuilder();
-		var reader = await _grainIterator.GetReader<IReverseGrain>(new GrainDescriptor("Reverse2", "Reverse", "STORE_NAME"));
+		var reader = await _grainIterator.GetReader<IReverseGrain>(new GrainDescriptor("Reverse", "STORE_NAME"));
 		try
 		{
 			await reader.StartRead(CancellationToken.None);
