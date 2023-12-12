@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>7.0.0.1</Version>
+    <Version>8.0.0.1-rc1</Version>
     <Title>Orleans.Iterator.AdoNet</Title>
     <Authors>Bernhard Pollerspöck</Authors>
     <Company>qsp</Company>
