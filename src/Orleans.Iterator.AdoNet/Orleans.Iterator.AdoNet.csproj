@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>8.0.0.1-rc1</Version>
+    <Version>8.0.0.1</Version>
     <Title>Orleans.Iterator.AdoNet</Title>
     <Authors>Bernhard Pollerspöck</Authors>
     <Company>qsp</Company>
@@ -16,8 +16,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Orleans.Iterator.Abstraction\Orleans.Iterator.Abstraction.csproj" />
     <PackageReference Include="MySql.Data" Version="8.2.0" />
-    <PackageReference Include="Microsoft.Orleans.Persistence.AdoNet" Version="8.0.0-rc1" />
-    <PackageReference Include="Microsoft.Orleans.Sdk" Version="8.0.0-rc1" />
+    <PackageReference Include="Microsoft.Orleans.Persistence.AdoNet" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Orleans.Sdk" Version="8.0.0" />
   </ItemGroup>
 
 </Project>
