@@ -27,7 +27,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orleans.Iterator.Azure", "s
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "032_Redis", "032_Redis", "{721894BE-96B5-4941-8AC2-0195E340D3C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orleans.Iterator.Redis", "src\Orleans.Iterator.Redis\Orleans.Iterator.Redis.csproj", "{17040F42-0E26-4D0B-8CCA-9A7A45751096}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orleans.Iterator.Redis", "src\Orleans.Iterator.Redis\Orleans.Iterator.Redis.csproj", "{17040F42-0E26-4D0B-8CCA-9A7A45751096}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F49976BE-C927-4BCE-B89D-CE218B29D994}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
