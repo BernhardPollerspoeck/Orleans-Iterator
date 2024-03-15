@@ -4,6 +4,13 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>8.0.0.1</Version>
+    <Title>Orleans.Iterator.Redis</Title>
+    <Authors>Bernhard Pollerspöck</Authors>
+    <Company>qsp</Company>
+    <Copyright>https://github.com/BernhardPollerspoeck/Orleans-Iterator/blob/master/LICENSE.txt</Copyright>
+    <PackageProjectUrl>https://github.com/BernhardPollerspoeck/Orleans-Iterator</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
