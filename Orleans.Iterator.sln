@@ -25,6 +25,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "031_Azure", "031_Azure", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orleans.Iterator.Azure", "src\Orleans.Iterator.Azure\Orleans.Iterator.Azure.csproj", "{D3CBDE16-3A3E-4FCE-A785-D0782D79CE77}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "032_Redis", "032_Redis", "{721894BE-96B5-4941-8AC2-0195E340D3C4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orleans.Iterator.Redis", "src\Orleans.Iterator.Redis\Orleans.Iterator.Redis.csproj", "{17040F42-0E26-4D0B-8CCA-9A7A45751096}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F49976BE-C927-4BCE-B89D-CE218B29D994}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,9 +61,13 @@ Global
 		{1F89690B-9BFB-427A-91F8-313618B25167}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F89690B-9BFB-427A-91F8-313618B25167}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D3CBDE16-3A3E-4FCE-A785-D0782D79CE77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3CBDE16-3A3E-4FCE-A785-D0782D79CE77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3CBDE16-3A3E-4FCE-A785-D0782D79CE77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3CBDE16-3A3E-4FCE-A785-D0782D79CE77}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D3CBDE16-3A3E-4FCE-A785-D0782D79CE77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17040F42-0E26-4D0B-8CCA-9A7A45751096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17040F42-0E26-4D0B-8CCA-9A7A45751096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17040F42-0E26-4D0B-8CCA-9A7A45751096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17040F42-0E26-4D0B-8CCA-9A7A45751096}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +79,7 @@ Global
 		{CF951541-202B-4582-A436-402DCED6E7CD} = {D400CE32-9A12-47C5-A2FF-11BEDC7E71AC}
 		{1F89690B-9BFB-427A-91F8-313618B25167} = {D30A722F-5845-44A4-B2D9-903FC7D38426}
 		{D3CBDE16-3A3E-4FCE-A785-D0782D79CE77} = {F9479BC6-4F4A-4EE7-8D65-2AD33A56E03E}
+		{17040F42-0E26-4D0B-8CCA-9A7A45751096} = {721894BE-96B5-4941-8AC2-0195E340D3C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E5392A4-9CEC-42E6-B02B-A2CD5EA91C6D}

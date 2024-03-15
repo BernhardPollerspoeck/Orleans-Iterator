@@ -9,12 +9,13 @@ The iterator returns only the useable GrainId`s to prevent any activation of gra
 | Orleans.Iterator.Abstraction | Core abstraction layer containing all interfaces and provider agnostic implementations used by the client. All Implementation Packages depend on this. | ![Nuget](https://img.shields.io/nuget/v/Orleans.Iterator.Abstraction?logo=NuGet&color=00aa00) |
 | Orleans.Iterator.AdoNet | Implements the Reader for the Ado.Net Providers. | ![Nuget](https://img.shields.io/nuget/v/Orleans.Iterator.AdoNet?logo=NuGet&color=00aa00) |
 | Orleans.Iterator.Azure | Implements the Reader for Azure Blob Provider. | ![Nuget](https://img.shields.io/nuget/v/Orleans.Iterator.Azure?logo=NuGet&color=00aa00) |
+| Orleans.Iterator.Redis | Implements the Reader for Redis Provider. | ![Nuget](https://img.shields.io/nuget/v/Orleans.Iterator.Redis?logo=NuGet&color=00aa00) |
 
 ## Contributors
 
- - [Berhnard Pollersp�ck](https://github.com/BernhardPollerspoeck) The core maintainer of this Project.
+ - [Bernhard Pollersp�ck](https://github.com/BernhardPollerspoeck) The core maintainer of this Project.
  - [Don Alvarez](https://github.com/yoDon): Contributor and maintainer for **Orleans.Iterator.Azure**
-
+ - [Hendrik De Vloed](https://github.com/hendrikdevloed): Contributor for **Orleans.Iterator.Redis**
 
 ## Sample Explaination
 
@@ -33,6 +34,14 @@ builder.UseOrleans((hostContext, siloBuilder) =>
         {
             o.ConnectionString = azureStorageConnectionString;
             o.ContainerName = azureStorageContainerName;
+        })
+        .UseRedisGrainIterator(options =>
+        {
+            options.ConnectionString = redisConnectionString;
+            if (redisDatabaseNumber != int.MinValue)
+            {
+                options.DatabaseNumber = redisDatabaseNumber;
+            }
         });
 );
 ```

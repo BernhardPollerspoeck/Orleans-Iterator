@@ -6,6 +6,8 @@ using Orleans.Iterator.Dev.Grains;
 using Orleans.Iterator.Abstraction;
 using Orleans.Iterator.Abstraction.Abstraction;
 using Orleans.Runtime;
+using Orleans.Clustering.Redis;
+using StackExchange.Redis;
 
 var configuration = new ConfigurationBuilder()
 	.SetBasePath(Directory.GetCurrentDirectory())
@@ -14,7 +16,7 @@ var configuration = new ConfigurationBuilder()
 	.AddUserSecrets<Program>()
 	.Build();
 
-var storageType = EStorageType.AdoNet;
+var storageType = EStorageType.Redis;
 var builder = Host.CreateDefaultBuilder(args);
 
 #region configuration
@@ -29,9 +31,13 @@ builder.UseOrleansClient(clientBuilder =>
 		case EStorageType.AzureBlob:
 			ConfigureAzureBlob(clientBuilder, configuration);
 			break;
-	}
 
-	clientBuilder
+        case EStorageType.Redis:
+            ConfigureRedis(clientBuilder, configuration);
+            break;
+    }
+
+    clientBuilder
 		.Configure<ClusterOptions>(o =>
 		{
 			o.ClusterId = "iterator";
@@ -94,5 +100,21 @@ void ConfigureAzureBlob(IClientBuilder clientBuilder, IConfiguration configurati
 	{
 		options.ConfigureTableServiceClient(azureStorageConnectionString);
 	});
+}
+
+void ConfigureRedis(IClientBuilder clientBuilder, IConfiguration configuration)
+{
+    var redisConnectionString = configuration["Redis:ConnectionString"] ?? "";
+    var redisDatabaseNumber = configuration.GetValue<int>("Redis:DatabaseNumber", int.MinValue);
+    var redisConfigurationOptions = ConfigurationOptions.Parse(redisConnectionString);
+    if (redisDatabaseNumber != int.MinValue)
+    {
+        redisConfigurationOptions.DefaultDatabase = redisDatabaseNumber;
+    }
+
+    clientBuilder.UseRedisClustering(options =>
+    {
+		options.ConfigurationOptions = redisConfigurationOptions;
+    });
 }
 #endregion

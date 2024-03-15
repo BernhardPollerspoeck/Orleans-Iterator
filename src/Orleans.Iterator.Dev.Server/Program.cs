@@ -1,7 +1,9 @@
 ﻿using Orleans.Configuration;
 using Orleans.Iterator.AdoNet.Extensions;
 using Orleans.Iterator.Azure.Extensions;
+using Orleans.Iterator.Redis.Extensions;
 using Orleans.Iterator.Dev.Grains;
+using StackExchange.Redis;
 
 var configuration = new ConfigurationBuilder()
 	.SetBasePath(Directory.GetCurrentDirectory())
@@ -10,7 +12,7 @@ var configuration = new ConfigurationBuilder()
 	.AddUserSecrets<Program>()
 	.Build();
 
-var storageType = EStorageType.AdoNet;
+var storageType = EStorageType.Redis;
 var builder = Host.CreateDefaultBuilder(args);
 
 #region configuration
@@ -24,6 +26,10 @@ builder.UseOrleans((hostContext, siloBuilder) =>
 
 		case EStorageType.AzureBlob:
 			ConfigureAzureBlob(siloBuilder, configuration);
+			break;
+
+		case EStorageType.Redis:
+			ConfigureRedis(siloBuilder, configuration);
 			break;
 	}
 
@@ -84,5 +90,34 @@ static void ConfigureAzureBlob(ISiloBuilder siloBuilder, IConfiguration configur
 			o.ConnectionString = azureStorageConnectionString;
 			o.ContainerName = azureStorageContainerName;
 		});
+}
+
+static void ConfigureRedis(ISiloBuilder siloBuilder, IConfiguration configuration)
+{
+    var redisConnectionString = configuration["Redis:ConnectionString"] ?? "";
+    var redisDatabaseNumber = configuration.GetValue<int>("Redis:DatabaseNumber", int.MinValue);
+    var redisConfigurationOptions = ConfigurationOptions.Parse(redisConnectionString);
+    if (redisDatabaseNumber != int.MinValue)
+    {
+        redisConfigurationOptions.DefaultDatabase = redisDatabaseNumber;
+    }
+
+    siloBuilder
+        .UseRedisClustering(options =>
+        {
+			options.ConfigurationOptions = redisConfigurationOptions;
+        })
+        .AddRedisGrainStorage("STORE_NAME", options =>
+        {
+			options.ConfigurationOptions = redisConfigurationOptions;
+        })
+        .UseRedisGrainIterator(options =>
+        {
+			options.ConnectionString = redisConnectionString;
+            if (redisDatabaseNumber != int.MinValue)
+            {
+                options.DatabaseNumber = redisDatabaseNumber;
+            }
+        });
 }
 #endregion

@@ -4,4 +4,5 @@ public enum EStorageType
 {
 	AdoNet,
 	AzureBlob,
+	Redis
 }
