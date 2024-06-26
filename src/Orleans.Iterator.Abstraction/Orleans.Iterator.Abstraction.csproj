@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>8.0.0.1</Version>
+    <Version>8.1.0.1</Version>
     <Title>Orleans.Iterator.Abstraction</Title>
     <Authors>Bernhard Pollerspöck</Authors>
     <Company>qsp</Company>
@@ -14,8 +14,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Orleans.Runtime" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Orleans.Sdk" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Orleans.Runtime" Version="8.1.0" />
+    <PackageReference Include="Microsoft.Orleans.Sdk" Version="8.1.0" />
   </ItemGroup>
 
 
