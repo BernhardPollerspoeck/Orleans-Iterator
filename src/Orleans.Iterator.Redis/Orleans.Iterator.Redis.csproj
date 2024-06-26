@@ -4,11 +4,18 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Version>8.1.0.1</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Orleans.Iterator.AdoNet</Title>
+    <Authors>Bernhard Pollerspöck</Authors>
+    <Company>qsp</Company>
+    <Copyright>https://github.com/BernhardPollerspoeck/Orleans-Iterator/blob/master/LICENSE.txt</Copyright>
+    <PackageProjectUrl>https://github.com/BernhardPollerspoeck/Orleans-Iterator</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Orleans.Sdk" Version="8.0.0" />
-    <PackageReference Include="StackExchange.Redis" Version="2.7.23" />
+    <PackageReference Include="Microsoft.Orleans.Sdk" Version="8.1.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.0" />
   </ItemGroup>
 
   <ItemGroup>
