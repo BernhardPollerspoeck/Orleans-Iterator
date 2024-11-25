@@ -31,11 +31,13 @@ public class RedisIterativeGrainReader<IGrainInterface> : IIterativeServerGrainR
 
     #region ctor
     public RedisIterativeGrainReader(
+        ConnectionMultiplexer connection,
         IOptions<RedisGrainIteratorOptions> options,
         IOptions<ClusterOptions> clusterOptions,
         ILogger<RedisIterativeGrainReader<IGrainInterface>> logger,
         params GrainDescriptor[] grainDescriptions)
     {
+        _connection = connection;
         _options = options.Value;
         _serviceId = clusterOptions.Value.ServiceId;
         _logger = logger;
@@ -49,9 +51,12 @@ public class RedisIterativeGrainReader<IGrainInterface> : IIterativeServerGrainR
     #region IIterativeGrainReader
     public bool ReadAllowed => _cursor is not null;
 
-    public async Task<bool> StartRead(CancellationToken cancellationToken)
+    public Task<bool> StartRead(CancellationToken cancellationToken)
     {
-        _connection = await CreateOpenedConnection();
+        if(_connection is null)
+        {
+            return Task.FromResult(false);
+        }
         // get the endpoints
         var endpoints = _connection.GetEndPoints();
         foreach (var endpoint in endpoints)
@@ -60,19 +65,18 @@ public class RedisIterativeGrainReader<IGrainInterface> : IIterativeServerGrainR
             _cursor = _server.Keys(database: _options.DatabaseNumber ?? -1, pattern: _statePrefix);
             if (_cursor is not null)
             {
-                return ReadAllowed;
+                return Task.FromResult(ReadAllowed);
             }
         }
 
-        return ReadAllowed;
+        return Task.FromResult(ReadAllowed);
     }
-    public async Task StopRead(CancellationToken cancellationToken)
+    public Task StopRead(CancellationToken cancellationToken)
     {
-        if (_connection is not null)
-        {
-            await _connection.CloseAsync();
-            await _connection.DisposeAsync();
-        }
+        _server = null;
+        _connection = null;
+        _cursor = null;
+        return Task.CompletedTask;
     }
     #endregion
 
@@ -111,15 +115,6 @@ public class RedisIterativeGrainReader<IGrainInterface> : IIterativeServerGrainR
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
-    }
-    #endregion
-
-    #region init helper
-    private async Task<ConnectionMultiplexer> CreateOpenedConnection()
-    {
-        var redisOptions = ConfigurationOptions.Parse(_options.ConnectionString);
-        var connection = await ConnectionMultiplexer.ConnectAsync(redisOptions).ConfigureAwait(false);
-        return connection;
     }
     #endregion
 }
