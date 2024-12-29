@@ -14,8 +14,8 @@ internal static class AdoNetInvariants
     /// <remarks>The invariant names here do not match the namespaces as is often the convention.
     /// Current exception is MySQL Connector library that uses the same invariant as MySQL compared
     /// to the official Oracle distribution.</remarks>
-    public static ICollection<string> Invariants { get; } = new Collection<string>(new List<string>(new[]
-    {
+    public static ICollection<string> Invariants { get; } = new Collection<string>(new List<string>(
+    [
             InvariantNameMySql,
             InvariantNameOracleDatabase,
             InvariantNamePostgreSql,
@@ -23,12 +23,11 @@ internal static class AdoNetInvariants
             InvariantNameSqlServer,
             InvariantNameSqlServerDotnetCore,
             InvariantNameMySqlConnector
-        }));
+        ]));
 
     /// <summary>
     /// Microsoft SQL Server invariant name string.
     /// </summary>
-#pragma warning disable IDE1006 // Naming Styles
     public const string InvariantNameSqlServer = "System.Data.SqlClient";
 
     /// <summary>
@@ -60,5 +59,4 @@ internal static class AdoNetInvariants
     /// An open source implementation of the MySQL connector library.
     /// </summary>
     public const string InvariantNameMySqlConnector = "MySql.Data.MySqlConnector";
-#pragma warning restore IDE1006 // Naming Styles
 }

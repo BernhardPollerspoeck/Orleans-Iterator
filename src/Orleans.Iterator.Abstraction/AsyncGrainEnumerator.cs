@@ -2,23 +2,12 @@
 
 namespace Orleans.Iterator.Abstraction;
 
-public class AsyncGrainEnumerator<TGrainInterface> : IAsyncEnumerator<GrainId>
+public class AsyncGrainEnumerator<TGrainInterface>(IIteratorGrain<TGrainInterface> grain, params GrainDescriptor[] grainDescriptions) : IAsyncEnumerator<GrainId>
     where TGrainInterface : IGrain
 {
     #region fields
-    private readonly IIteratorGrain<TGrainInterface> _grain;
-    private readonly GrainDescriptor[] _grainDescriptions;
-
     private bool _initialized;
     private GrainId? _current;
-    #endregion
-
-    #region ctor
-    public AsyncGrainEnumerator(IIteratorGrain<TGrainInterface> grain, params GrainDescriptor[] grainDescriptions)
-    {
-        _grain = grain;
-		_grainDescriptions = grainDescriptions;
-    }
     #endregion
 
     #region IAsyncEnumerator<GrainId>
@@ -28,15 +17,15 @@ public class AsyncGrainEnumerator<TGrainInterface> : IAsyncEnumerator<GrainId>
     {
         if (!_initialized)
         {
-            await _grain.Initialize(_grainDescriptions);
+            await grain.Initialize(grainDescriptions);
             _initialized = true;
         }
-        _current = await _grain.GetNextItem();
+        _current = await grain.GetNextItem();
         return _current.HasValue;
     }
     public async ValueTask DisposeAsync()
     {
-        await _grain.DisposeAsync();
+        await grain.DisposeAsync();
         GC.SuppressFinalize(this);
     }
     #endregion

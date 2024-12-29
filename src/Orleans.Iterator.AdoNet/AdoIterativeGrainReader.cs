@@ -10,33 +10,22 @@ using Orleans.Iterator.Abstraction;
 
 namespace Orleans.Iterator.AdoNet;
 
-public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainReader
+public class AdoIterativeGrainReader<IGrainInterface>(
+    IOptions<AdoNetGrainIteratorOptions> options,
+    IOptions<ClusterOptions> clusterOptions,
+    params GrainDescriptor[] grainDescriptions) : IIterativeServerGrainReader
 	where IGrainInterface : IGrain
 {
 	#region fields
-	private readonly AdoNetGrainIteratorOptions _options;
-	private readonly string _serviceId;
-	private readonly GrainDescriptor[] _grainDescriptions;
-
-	private DbDataReader? _reader;
+	private readonly AdoNetGrainIteratorOptions _options = options.Value;
+	private readonly string _serviceId = clusterOptions.Value.ServiceId;
+    private DbDataReader? _reader;
 	private DbConnection? _connection;
 	private DbCommand? _command;
-	#endregion
+    #endregion
 
-	#region ctor
-	public AdoIterativeGrainReader(
-		IOptions<AdoNetGrainIteratorOptions> options,
-		IOptions<ClusterOptions> clusterOptions,
-		params GrainDescriptor[] grainDescriptions)
-	{
-		_options = options.Value;
-		_serviceId = clusterOptions.Value.ServiceId;
-		_grainDescriptions = grainDescriptions;
-	}
-	#endregion
-
-	#region IIterativeGrainReader
-	public bool ReadAllowed => this is { _reader: { HasRows: true, IsClosed: false } };
+    #region IIterativeGrainReader
+    public bool ReadAllowed => this is { _reader: { HasRows: true, IsClosed: false } };
 
 	public async Task<bool> StartRead(CancellationToken cancellationToken)
 	{
@@ -77,7 +66,7 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainRea
 			var n0 = _reader.GetInt64(0);
 			var n1 = _reader.GetInt64(1);
 			var extString = _reader.IsDBNull(2) ? null : _reader.GetString(2);
-			var type = _grainDescriptions.First(d => d.StateName == _reader.GetString(3)).GrainType;
+			var type = grainDescriptions.First(d => d.StateName == _reader.GetString(3)).GrainType;
 			var grainId = GetGrainId(n0, n1, extString, type);
 			if (grainId.HasValue)
 			{
@@ -106,16 +95,16 @@ public class AdoIterativeGrainReader<IGrainInterface> : IIterativeServerGrainRea
 	{
 		var command = connection.CreateCommand();
 		command.AddParameter("@serviceId", _serviceId);
-		for (var i = 1; i <= _grainDescriptions.Length; i++)
+		for (var i = 1; i <= grainDescriptions.Length; i++)
 		{
-			command.AddParameter($"@gts{i}", _grainDescriptions[i - 1].StateName);
+			command.AddParameter($"@gts{i}", grainDescriptions[i - 1].StateName);
 		}
 		return command;
 	}
 	private void SetQuery(DbCommand command)
 	{
 		var queryProvider = QueryProviderFactory.CreateProvider(_options.Invariant);
-		command.CommandText = queryProvider.GetSelectGrainIdQuery(_options.IgnoreNullState, _grainDescriptions.Length);
+		command.CommandText = queryProvider.GetSelectGrainIdQuery(_options.IgnoreNullState, grainDescriptions.Length);
 	}
 	#endregion
 

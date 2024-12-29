@@ -13,13 +13,13 @@ internal static class DbConnectionFactory
     private static readonly Dictionary<string, List<Tuple<string, string>>> _providerFactoryTypeMap =
         new()
         {
-                { AdoNetInvariants.InvariantNameSqlServer, new List<Tuple<string, string>>{ new Tuple<string, string>("System.Data.SqlClient", "System.Data.SqlClient.SqlClientFactory") } },
-                { AdoNetInvariants.InvariantNameMySql, new List<Tuple<string, string>>{ new Tuple<string, string>("MySql.Data", "MySql.Data.MySqlClient.MySqlClientFactory") } },
-                { AdoNetInvariants.InvariantNameOracleDatabase, new List<Tuple<string, string>>{ new Tuple<string, string>("Oracle.ManagedDataAccess", "Oracle.ManagedDataAccess.Client.OracleClientFactory") } },
-                { AdoNetInvariants.InvariantNamePostgreSql, new List<Tuple<string, string>>{ new Tuple<string, string>("Npgsql", "Npgsql.NpgsqlFactory") } },
-                { AdoNetInvariants.InvariantNameSqlLite, new List<Tuple<string, string>>{ new Tuple<string, string>("Microsoft.Data.Sqlite", "Microsoft.Data.Sqlite.SqliteFactory") } },
-                { AdoNetInvariants.InvariantNameSqlServerDotnetCore,new List<Tuple<string, string>>{ new Tuple<string, string>("Microsoft.Data.SqlClient", "Microsoft.Data.SqlClient.SqlClientFactory") } },
-                { AdoNetInvariants.InvariantNameMySqlConnector, new List<Tuple<string, string>>{ new Tuple<string, string>("MySqlConnector", "MySqlConnector.MySqlConnectorFactory") , new Tuple<string, string>("MySqlConnector", "MySql.Data.MySqlClient.MySqlClientFactory") } },
+                { AdoNetInvariants.InvariantNameSqlServer, new List<Tuple<string, string>>{ new("System.Data.SqlClient", "System.Data.SqlClient.SqlClientFactory") } },
+                { AdoNetInvariants.InvariantNameMySql, new List<Tuple<string, string>>{ new("MySql.Data", "MySql.Data.MySqlClient.MySqlClientFactory") } },
+                { AdoNetInvariants.InvariantNameOracleDatabase, new List<Tuple<string, string>>{ new("Oracle.ManagedDataAccess", "Oracle.ManagedDataAccess.Client.OracleClientFactory") } },
+                { AdoNetInvariants.InvariantNamePostgreSql, new List<Tuple<string, string>>{ new("Npgsql", "Npgsql.NpgsqlFactory") } },
+                { AdoNetInvariants.InvariantNameSqlLite, new List<Tuple<string, string>>{ new("Microsoft.Data.Sqlite", "Microsoft.Data.Sqlite.SqliteFactory") } },
+                { AdoNetInvariants.InvariantNameSqlServerDotnetCore,new List<Tuple<string, string>>{ new("Microsoft.Data.SqlClient", "Microsoft.Data.SqlClient.SqlClientFactory") } },
+                { AdoNetInvariants.InvariantNameMySqlConnector, new List<Tuple<string, string>>{ new("MySqlConnector", "MySqlConnector.MySqlConnectorFactory") , new("MySqlConnector", "MySql.Data.MySqlClient.MySqlClientFactory") } },
         };
 
     private static CachedFactory GetFactory(string invariantName)
@@ -106,36 +106,29 @@ internal static class DbConnectionFactory
         return connection;
     }
 
-    private class CachedFactory
+    private class CachedFactory(DbProviderFactory factory, string factoryName, string factoryDescription, string factoryAssemblyQualifiedNameKey)
     {
-        public CachedFactory(DbProviderFactory factory, string factoryName, string factoryDescription, string factoryAssemblyQualifiedNameKey)
-        {
-            Factory = factory;
-            FactoryName = factoryName;
-            FactoryDescription = factoryDescription;
-            FactoryAssemblyQualifiedNameKey = factoryAssemblyQualifiedNameKey;
-        }
 
         /// <summary>
         /// The factory to provide vendor specific functionality.
         /// </summary>
         /// <remarks>For more about <see href="http://florianreischl.blogspot.fi/2011/08/adonet-connection-pooling-internals-and.html">ConnectionPool</see>
         /// and issues with using this factory. Take these notes into account when considering robustness of Orleans!</remarks>
-        public readonly DbProviderFactory Factory;
+        public readonly DbProviderFactory Factory = factory;
 
         /// <summary>
         /// The name of the loaded factory, set by a database connector vendor.
         /// </summary>
-        public readonly string FactoryName;
+        public readonly string FactoryName = factoryName;
 
         /// <summary>
         /// The description of the loaded factory, set by a database connector vendor.
         /// </summary>
-        public readonly string FactoryDescription;
+        public readonly string FactoryDescription = factoryDescription;
 
         /// <summary>
         /// The description of the loaded factory, set by a database connector vendor.
         /// </summary>
-        public readonly string FactoryAssemblyQualifiedNameKey;
+        public readonly string FactoryAssemblyQualifiedNameKey = factoryAssemblyQualifiedNameKey;
     }
 }

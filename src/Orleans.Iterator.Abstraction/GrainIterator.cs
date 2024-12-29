@@ -2,26 +2,18 @@
 
 namespace Orleans.Iterator.Abstraction;
 
-public class GrainIterator<TGrainInterface> : IGrainIterator
+public class GrainIterator<TGrainInterface>(IClusterClient clusterClient, params GrainDescriptor[] grainDescriptions) : IGrainIterator
 	where TGrainInterface : IGrain
 {
-	#region fields
-	private readonly GrainDescriptor[] _grainDescriptions;
-	private readonly IIteratorGrain<TGrainInterface> _grain;
-	#endregion
 
-	#region ctor
-	public GrainIterator(IClusterClient clusterClient, params GrainDescriptor[] grainDescriptions)
-	{
-		_grain = clusterClient.GetGrain<IIteratorGrain<TGrainInterface>>(Guid.NewGuid().ToString());
-		_grainDescriptions = grainDescriptions;
-	}
-	#endregion
+    #region fields
+    private readonly IIteratorGrain<TGrainInterface> _grain = clusterClient.GetGrain<IIteratorGrain<TGrainInterface>>(Guid.NewGuid().ToString());
+    #endregion
 
-	#region IAsyncEnumerable<GrainId>
-	public IAsyncEnumerator<GrainId> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+    #region IAsyncEnumerable<GrainId>
+    public IAsyncEnumerator<GrainId> GetAsyncEnumerator(CancellationToken cancellationToken = default)
 	{
-		return new AsyncGrainEnumerator<TGrainInterface>(_grain, _grainDescriptions);
+		return new AsyncGrainEnumerator<TGrainInterface>(_grain, grainDescriptions);
 	}
 	#endregion
 }

@@ -3,26 +3,19 @@ using Orleans.Iterator.Abstraction.Server;
 using Orleans.Runtime;
 
 namespace Orleans.Iterator.AdoNet.Grains;
-public class IteratorGrain<TGrainInterface> : Grain, IIteratorGrain<TGrainInterface>
+public class IteratorGrain<TGrainInterface>(IServerGrainIterator serverGrainIterator) : Grain, IIteratorGrain<TGrainInterface>
     where TGrainInterface : IGrain
 {
+
     #region fields
-    private readonly IServerGrainIterator _serverGrainIterator;
     private IIterativeServerGrainReader? _reader;
     private IEnumerator<GrainId?>? _enumerator;
-    #endregion
-
-    #region ctor
-    public IteratorGrain(IServerGrainIterator serverGrainIterator)
-    {
-        _serverGrainIterator = serverGrainIterator;
-    }
     #endregion
 
     #region IIteratorGrain<TGrainInterface>
     public async Task Initialize(params GrainDescriptor[] grainDescriptions)
     {
-        _reader = await _serverGrainIterator.GetReader<TGrainInterface>(grainDescriptions);
+        _reader = await serverGrainIterator.GetReader<TGrainInterface>(grainDescriptions);
         await _reader.StartRead(CancellationToken.None);
         _enumerator = _reader.GetEnumerator();
     }
